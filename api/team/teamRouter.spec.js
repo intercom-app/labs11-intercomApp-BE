@@ -1,13 +1,17 @@
 const request = require('supertest');
 
-const server = require('../../index.js');
+const server = require('../server');
 
 describe('teamRouter', () => {
+
+    it('should set testing environment', () => {
+        expect(process.env.DB_ENV).toBe('testing');
+    });
 
     let res;
 
     beforeEach(async () => {
-        return res = await request(server).get('/api/team')
+        return res = await request(server).get('/api/team/')
     })
 
     describe('GET /', () => {
@@ -18,7 +22,10 @@ describe('teamRouter', () => {
         })
 
         it('should return list of team members', () => {
-            expect(res.body).toBeDefined();
+            expect(res.body).toHaveLength(6);
+            expect(res.body[1].id).toBe(2);
+            expect(res.body[1].name).toBe("Chelsea Tolnai")
+            expect(res.body[1].displayName).toBe("Chealsea")
         })
 
     });
