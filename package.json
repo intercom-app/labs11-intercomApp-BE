@@ -14,9 +14,12 @@
     "pg": "^7.9.0"
   },
   "devDependencies": {
-    "node": "^1.18.4"
+    "node": "^1.18.4",
+    "nodemon": "^1.18.10"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "server": "nodemon index.js",
+    "test": "cross-env DB_ENV=testing jest --watch --verbose"
   }
 }
