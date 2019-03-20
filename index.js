@@ -1,17 +1,6 @@
-const express = require("express");
-const server = express();
-const cors = require("cors");
+require('dotenv').config();
 
-const teamRouter = require('./api/team/teamRouter.js');
-
-server.use(cors());
-server.use(express.json());
-
-server.use('/api/team', teamRouter);
-
-server.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const server = require('./api/server');
 
 const port = process.env.PORT || 3300;
 server.listen(port, function() {
