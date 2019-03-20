@@ -1,0 +1,9 @@
+{
+  "name": "labs11-intercomApp-BE",
+  "version": "1.0.0",
+  "description": "Lambda Labs11 Intercom App",
+  "main": "index.js",
+  "repository": "https://github.com/intercom-app/labs11-intercomApp-BE",
+  "author": "farste <sfargali@gmail.com>",
+  "license": "MIT"
+}
