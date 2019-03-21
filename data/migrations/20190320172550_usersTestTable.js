@@ -1,6 +1,6 @@
 exports.up = function(knex, Promise) {
     // create the users tables
-    return knex.schema.createTable('users', function(tbl) {
+    return knex.schema.createTable('teamMembers', function(tbl) {
         // user id (primary key)
         tbl.increments(); // creates an id (if you don't pass anything here the default name of the column will be 'id'), makes it integer, makes it autoincrement
 
@@ -17,5 +17,5 @@ exports.up = function(knex, Promise) {
 }
 
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTableIfExists('users');
+    return knex.schema.dropTableIfExists('teamMembers');
 }
