@@ -10,11 +10,13 @@ describe('usersRouter', () => {
 
     let res;
 
-    beforeEach(async () => {
-        return res = await request(server).get('/api/users/')
-    })
+    
 
     describe('GET /', () => {
+
+        beforeEach(async () => {
+            return res = await request(server).get('/api/users/')
+        })
 
         it('should return 200 OK with JSON resp', async () => {
             expect(res.status).toBe(200);
@@ -29,6 +31,29 @@ describe('usersRouter', () => {
         })
 
     });
+
+    describe('GET /:id', () => {
+
+        beforeEach(async () => {
+            return res = await request(server).get('/api/users/1')
+        })
+
+        it('should return 200 OK with JSON resp', async () => {
+            expect(res.status).toBe(200);
+            expect(res.type).toBe('application/json');
+        })
+
+        it('should return the requested user', () => {
+            expect(res.body.id).toBe(1);
+            expect(res.body.firstName).toBe("Jerrylee")
+            expect(res.body.displayName).toBe("Pepi")
+            expect(res.body.billingSubcription).toBeDefined()
+            
+        })
+
+
+    })
+
 
 });
 
