@@ -38,6 +38,11 @@ exports.up = function(knex, Promise) {
             .string('billingSubcription', 128)
             .defaultTo('free')
             .notNullable();
+        
+        //createdAt
+        tbl
+            .timestamp('createdAt')
+            .defaultTo(knex.fn.now())
     })
 };
 
