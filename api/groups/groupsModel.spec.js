@@ -2,6 +2,8 @@ const groupModel = require('./groupsModel.js');
 
 describe('groupModel', () => {
 
+    const id = 1
+
     describe('getAllGroups()', () => {
 
         it('should return list of all groups with rquired db schema', async () => {
@@ -20,9 +22,9 @@ describe('groupModel', () => {
     describe('getGroupByID()', () => {
 
         it('should return list of one group by specified ID', async () => {
-            const res = await groupModel.getGroupByID(1);
+            const res = await groupModel.getGroupByID(id);
             expect(res).toBeDefined();
-            expect(res.id).toBe(1);
+            expect(res.id).toBe(id);
             expect(res.name).toBeDefined();
             expect(res.phoneNumber).toBeDefined();
             expect(res.callStatus).toBeDefined();
@@ -35,8 +37,20 @@ describe('groupModel', () => {
     describe('getGroupMembers()', () => {
 
         it('should return list all members of group by specified group ID', async () => {
-            const id = 1
             const res = await groupModel.getGroupMembers(id);
+            expect(res).toHaveLength;
+            expect(res[0].groupId).toBe(id);
+            expect(res[0].userId).toBeDefined();
+            expect(res[0].displayName).toBeDefined();
+
+        });
+
+    });
+
+    describe('getGroupOwners()', () => {
+
+        it('should return list all owners of group by specified group ID', async () => {
+            const res = await groupModel.getGroupOwners(id);
             expect(res).toHaveLength;
             expect(res[0].groupId).toBe(id);
             expect(res[0].userId).toBeDefined();

@@ -23,4 +23,17 @@ module.exports = {
 
     },
 
+    getGroupOwners: function(groupID) {
+
+        return db('usersGroupsOwnership')
+            .select(
+                'usersGroupsOwnership.groupId', 
+                'usersGroupsOwnership.userId', 
+                'users.displayName',
+            )
+            .where({ 'groupId' : groupID })
+            .join('users', 'usersGroupsOwnership.userId', 'users.id')
+
+    },
+
 };
