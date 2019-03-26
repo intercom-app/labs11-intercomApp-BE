@@ -37,8 +37,11 @@ module.exports = {
     },
 
     getGroupActivity: function(groupId) {
-
         return db('activities').where({ groupId })
-
     },
+
+    getGroupCallStatus: function(id) {
+        return db('groups').select('callStatus').where({ id }).first();
+    },
+    
 };

@@ -73,4 +73,15 @@ describe('groupModel', () => {
 
     });
 
+    describe('getGroupCallStatus()', () => {
+
+        it('should return call status by specified group ID', async () => {
+            const res = await groupModel.getGroupCallStatus(id);
+            expect(res.callStatus).toBeDefined();
+            expect(res.callStatus).toBe(1 || 0);
+
+        });
+
+    });
+
 });

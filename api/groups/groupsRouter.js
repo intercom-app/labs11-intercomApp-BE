@@ -51,18 +51,14 @@ router.get('/:id/activities', async (req, res) => {
     }
 });
 
+router.get('/:id/callStatus', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const callStatus = await groupsModel.getGroupCallStatus(id);
+        res.status(200).json(callStatus);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 module.exports = router;
-
-
-// server.get('api/groups/:id/callStatus',(req,res) => {
-//     const id = req.params.id;  
-//     db('groups')
-//         .where({id:id})
-//         .select('callStatus')
-//         .then(callStatus => {
-//             res.status(200).json(callStatus)
-//         })
-//         .catch(err => {
-//             res.status(500).json(err);
-//         })
-// });
