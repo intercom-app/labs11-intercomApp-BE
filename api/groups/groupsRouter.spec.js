@@ -9,6 +9,7 @@ describe('groupsRouter', () => {
     });
 
     let res;
+    const id = 1;
 
     describe('GET /', () => {
 
@@ -33,9 +34,7 @@ describe('groupsRouter', () => {
     });
 
     describe('GET /:id', () => {
-        
-        const id = 1;
-
+    
         beforeEach(async () => {
             return res = await request(server).get(`/api/groups/${id}`)
         })
@@ -52,6 +51,28 @@ describe('groupsRouter', () => {
             expect(res.body.phoneNumber).toBeDefined();
             expect(res.body.callStatus).toBeDefined();
             expect(res.body.createdAt).toBeDefined();
+        })
+
+    });
+
+    describe('GET /:id/groupMembers', () => {
+        
+        beforeEach(async () => {
+            return res = await request(server).get(`/api/groups/${id}/groupMembers`)
+        })
+
+        it('should return 200 OK with JSON resp', async () => {
+            expect(res.status).toBe(200);
+            expect(res.type).toBe('application/json');
+        })
+
+        it('should return list of groupMembers display Names with user and group id', () => {
+            expect(res.body).toBeDefined();
+            expect(res.body).toHaveLength;
+            expect(res.body[0].groupId).toBe(id);
+            expect(res.body[0].userId).toBeDefined();
+            expect(res.body[0].displayName).toBeDefined();
+
         })
 
     });

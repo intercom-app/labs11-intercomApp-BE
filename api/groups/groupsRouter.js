@@ -21,21 +21,18 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.get('/:id/groupMembers', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const members = await groupsModel.getGroupMembers(id);
+        res.status(200).json(members);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 module.exports = router;
 
-
-// server.get('api/groups/:id',(req,res) => {
-//     const id = req.params.id;  
-//     db('groups')
-//         .where({id:id})
-//         .select() 
-//         .then(group => {
-//             res.status(200).json(group);
-//         })
-//         .catch(err => {
-//             res.status(500).json(err);
-//         })
-// });
 
 // server.get('api/groups/:id/groupMembers',(req,res) => {
 //     const id = req.params.id;  
