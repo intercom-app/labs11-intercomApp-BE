@@ -10,11 +10,11 @@ describe('groupsRouter', () => {
 
     let res;
 
-    beforeEach(async () => {
-        return res = await request(server).get('/api/groups/')
-    })
-
     describe('GET /', () => {
+
+        beforeEach(async () => {
+            return res = await request(server).get('/api/groups/')
+        })
 
         it('should return 200 OK with JSON resp', async () => {
             expect(res.status).toBe(200);
@@ -28,6 +28,30 @@ describe('groupsRouter', () => {
             expect(res.body[0].phoneNumber).toBeDefined();
             expect(res.body[0].callStatus).toBeDefined();
             expect(res.body[0].createdAt).toBeDefined();
+        })
+
+    });
+
+    describe('GET /:id', () => {
+        
+        const id = 1;
+
+        beforeEach(async () => {
+            return res = await request(server).get(`/api/groups/${id}`)
+        })
+
+        it('should return 200 OK with JSON resp', async () => {
+            expect(res.status).toBe(200);
+            expect(res.type).toBe('application/json');
+        })
+
+        it('should return one group with specified ID by params', () => {
+            expect(res.body).toBeDefined();
+            expect(res.body.id).toBe(id);
+            expect(res.body.name).toBeDefined();
+            expect(res.body.phoneNumber).toBeDefined();
+            expect(res.body.callStatus).toBeDefined();
+            expect(res.body.createdAt).toBeDefined();
         })
 
     });

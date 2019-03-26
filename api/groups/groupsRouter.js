@@ -11,6 +11,16 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const group = await groupsModel.getGroupByID(id);
+        res.status(200).json(group);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 module.exports = router;
 
 

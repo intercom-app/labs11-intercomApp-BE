@@ -17,4 +17,19 @@ describe('groupModel', () => {
 
     });
 
+    describe('getGroupByID()', () => {
+
+        it('should return list of one group by specified ID', async () => {
+            const res = await groupModel.getGroupByID(1);
+            expect(res).toBeDefined();
+            expect(res.id).toBe(1);
+            expect(res.name).toBeDefined();
+            expect(res.phoneNumber).toBeDefined();
+            expect(res.callStatus).toBeDefined();
+            expect(res.createdAt).toBeDefined();
+
+        });
+
+    });
+
 });
