@@ -1,0 +1,60 @@
+
+exports.seed = function (knex, Promise) {
+  //Deletes ALL existing entries
+  return knex('activities')
+      .truncate()
+      .then(function () {
+          //Inserts seed entries
+          return knex('activities').insert([
+            {groupId:20,userID:48,activity:"morbi ut odio cras mi pede malesuada in imperdiet et"},
+            {groupId:6,userID:13,activity:"nulla eget eros elementum pellentesque quisque porta volutpat erat quisque"},
+            {groupId:13,userID:20,activity:"rutrum nulla tellus in sagittis dui vel"},
+            {groupId:3,userID:37,activity:"maecenas rhoncus aliquam lacus morbi quis tortor id"},
+            {groupId:17,userID:5,activity:"rutrum ac lobortis vel dapibus at diam nam"},
+            {groupId:10,userID:24,activity:"consequat varius integer ac leo pellentesque ultrices mattis"},
+            {groupId:18,userID:37,activity:"vulputate justo in blandit ultrices enim lorem ipsum dolor sit"},
+            {groupId:3,userID:32,activity:"tellus in sagittis dui vel"},
+            {groupId:16,userID:4,activity:"accumsan tellus nisi eu orci mauris"},
+            {groupId:5,userID:49,activity:"ac enim in tempor turpis nec euismod scelerisque quam"},
+            {groupId:8,userID:48,activity:"in sagittis dui vel nisl duis"},
+            {groupId:2,userID:12,activity:"orci eget orci vehicula condimentum curabitur in"},
+            {groupId:4,userID:45,activity:"sed tristique in tempus sit amet sem fusce consequat nulla"},
+            {groupId:15,userID:43,activity:"at turpis a pede posuere nonummy"},
+            {groupId:9,userID:33,activity:"cras non velit nec nisi vulputate nonummy maecenas tincidunt"},
+            {groupId:9,userID:36,activity:"ac leo pellentesque ultrices mattis odio"},
+            {groupId:1,userID:26,activity:"praesent blandit lacinia erat vestibulum sed magna at nunc"},
+            {groupId:2,userID:44,activity:"felis ut at dolor quis odio consequat"},
+            {groupId:13,userID:39,activity:"volutpat in congue etiam justo etiam pretium iaculis"},
+            {groupId:5,userID:41,activity:"orci mauris lacinia sapien quis libero"},
+            {groupId:2,userID:46,activity:"interdum venenatis turpis enim blandit mi in porttitor"},
+            {groupId:3,userID:27,activity:"nulla nunc purus phasellus in felis donec"},
+            {groupId:7,userID:36,activity:"platea dictumst etiam faucibus cursus"},
+            {groupId:17,userID:45,activity:"interdum mauris non ligula pellentesque ultrices phasellus"},
+            {groupId:5,userID:32,activity:"penatibus et magnis dis parturient"},
+            {groupId:5,userID:23,activity:"libero non mattis pulvinar nulla pede ullamcorper augue a suscipit"},
+            {groupId:19,userID:30,activity:"sed interdum venenatis turpis enim blandit"},
+            {groupId:17,userID:19,activity:"magnis dis parturient montes nascetur ridiculus"},
+            {groupId:12,userID:44,activity:"orci luctus et ultrices posuere cubilia curae duis faucibus accumsan"},
+            {groupId:17,userID:12,activity:"justo in hac habitasse platea dictumst etiam"},
+            {groupId:11,userID:48,activity:"nullam sit amet turpis elementum ligula vehicula"},
+            {groupId:13,userID:38,activity:"non pretium quis lectus suspendisse potenti"},
+            {groupId:9,userID:8,activity:"et magnis dis parturient montes nascetur ridiculus mus etiam"},
+            {groupId:5,userID:24,activity:"odio condimentum id luctus nec molestie sed"},
+            {groupId:1,userID:33,activity:"mauris morbi non lectus aliquam"},
+            {groupId:19,userID:35,activity:"erat nulla tempus vivamus in felis"},
+            {groupId:10,userID:1,activity:"pretium nisl ut volutpat sapien arcu sed augue aliquam erat"},
+            {groupId:1,userID:41,activity:"risus praesent lectus vestibulum quam"},
+            {groupId:17,userID:34,activity:"at nibh in hac habitasse platea dictumst"},
+            {groupId:19,userID:30,activity:"mus vivamus vestibulum sagittis sapien cum sociis"},
+            {groupId:15,userID:39,activity:"sapien in sapien iaculis congue vivamus metus arcu adipiscing"},
+            {groupId:17,userID:50,activity:"duis aliquam convallis nunc proin at turpis a pede posuere"},
+            {groupId:2,userID:19,activity:"tempus vivamus in felis eu sapien cursus vestibulum proin eu"},
+            {groupId:11,userID:49,activity:"vel dapibus at diam nam tristique tortor"},
+            {groupId:14,userID:50,activity:"dictumst morbi vestibulum velit id pretium iaculis diam erat"},
+            {groupId:3,userID:43,activity:"vestibulum ante ipsum primis in"},
+            {groupId:19,userID:23,activity:"augue vestibulum ante ipsum primis in faucibus orci"},
+            {groupId:13,userID:33,activity:"molestie sed justo pellentesque viverra pede ac diam cras pellentesque"},
+            {groupId:20,userID:49,activity:"ridiculus mus etiam vel augue"},
+            {groupId:10,userID:47,activity:"justo maecenas rhoncus aliquam lacus morbi quis"}]);
+      });
+};
