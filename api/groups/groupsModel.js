@@ -10,7 +10,7 @@ module.exports = {
         return db('groups').where({ id }).first();
     },    
 
-    getGroupMembers: function(groupID) {
+    getGroupMembers: function(groupId) {
 
         return db('usersGroupsMembership')
             .select(
@@ -18,12 +18,12 @@ module.exports = {
                 'usersGroupsMembership.userId', 
                 'users.displayName',
             )
-            .where({ 'groupId' : groupID })
+            .where({ groupId })
             .join('users', 'usersGroupsMembership.userId', 'users.id')
 
     },
 
-    getGroupOwners: function(groupID) {
+    getGroupOwners: function(groupId) {
 
         return db('usersGroupsOwnership')
             .select(
@@ -31,9 +31,14 @@ module.exports = {
                 'usersGroupsOwnership.userId', 
                 'users.displayName',
             )
-            .where({ 'groupId' : groupID })
+            .where({ groupId })
             .join('users', 'usersGroupsOwnership.userId', 'users.id')
 
     },
 
+    getGroupActivity: function(groupId) {
+
+        return db('activities').where({ groupId })
+
+    },
 };
