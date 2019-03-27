@@ -8,10 +8,11 @@ function checkUser(req, res, next) {
     // console.log('checkuser', usersModel.getUserByEmail(req.body.email))
     usersModel.getUserByEmail(req.body.email)
         .then(foundUser => {
-            console.log('foundUser', foundUser)
+            // console.log('foundUser', foundUser)
             if(foundUser === undefined){
                 next();
             }
+
         })
         .catch(err =>{
             console.log(err)
@@ -38,7 +39,7 @@ router.get('/:id', async (req, res) => {
     // } catch (err) {
     //     res.status(500).json({ error: 'Error getting the user.' });
     // }
-    console.log('sssu',usersModel.getUserById(id))
+    // console.log('sssu',usersModel.getUserById(id))
 
     usersModel.getUserById(id)
     .then(foundUser => {
@@ -65,13 +66,13 @@ router.post('/', checkUser, async (req, res) => {
     const user = {
         email: req.body.email,
     }
-    console.log('user', user)
+    // console.log('user', user)
     
-    console.log('after next')
+    // console.log('after next')
     // try {
         usersModel.addUser(user)
         .then(newUser => {
-            console.log(newUser)
+            // console.log(newUser)
             res.status(201).json(newUser);
             console.log(`${newUser} got added`)
         })
