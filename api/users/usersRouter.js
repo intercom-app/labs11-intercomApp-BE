@@ -2,6 +2,8 @@ const router = require('express').Router();
 
 const usersModel = require('./usersModel');
 
+const userBelongedRouter = require('./userGroupsBelongedTo/userBelongedRouter');
+
 // api/users
 
 router.get('/', async (req, res) => {
@@ -53,5 +55,12 @@ router.get('/:id', async (req, res) => {
         res.status(500).json(err)
     }
 });
+
+// api/groups/:id/<subroutes>
+
+router.use('/:id/groupsBelongedTo', function(req, res, next) {
+    req.userId = req.params.id;
+    next()
+}, userBelongedRouter);
 
 module.exports = router;
