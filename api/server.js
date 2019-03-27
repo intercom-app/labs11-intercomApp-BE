@@ -35,75 +35,49 @@ server.post('/test', (req, res) => {
 });
 
 
+// server.get('api/users/:id/groupsBelongedTo', (req,res) => {
+//     const id = req.params.id;  
+//     db('users')
+//         .where({id:id})
+//         .then(user => {
+//             if (user) {
+//                 db('usersGroupsMembership')
+//                     .select('groupId')
+//                     .where({'userId':id})
+//                     .then(groups => {
+//                         res.status(200).json(groups)
+//                     })
+//             }
+//             else {
+//                 res.status(404).json({err: 'user id not found'})
+//             }
+//         })
+//         .catch(err => {
+//             res.status(500).json(err);
+//         })
+// });
 
-
-server.get('api/users',(req,res) => {
-    db('users')
-        .select().table('users')
-        .then(users => {
-            res.status(200).json(users);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/users/:id', (req,res) => {
-    const id = req.params.id; //could also destructure like so: const { id } = req.params;
-    db('users')
-        .where({id:id})
-        .select()
-        .then(user => {
-            res.status(200).json(user);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/users/:id/groupsBelongedTo', (req,res) => {
-    const id = req.params.id;  
-    db('users')
-        .where({id:id})
-        .then(user => {
-            if (user) {
-                db('usersGroupsMembership')
-                    .select('groupId')
-                    .where({'userId':id})
-                    .then(groups => {
-                        res.status(200).json(groups)
-                    })
-            }
-            else {
-                res.status(404).json({err: 'user id not found'})
-            }
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/users/:id/groupsOwned', (req,res) => {
-    const id = req.params.id;  
-    db('users')
-        .where({id:id})
-        .then(user => {
-            if (user) {
-                db('usersGroupsOwnership')
-                    .select('groupId')
-                    .where({'userId':id})
-                    .then(groups => {
-                        res.status(200).json(groups)
-                    })
-            }
-            else {
-                res.status(404).json({err: 'user id not found'})
-            }
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
+// server.get('api/users/:id/groupsOwned', (req,res) => {
+//     const id = req.params.id;  
+//     db('users')
+//         .where({id:id})
+//         .then(user => {
+//             if (user) {
+//                 db('usersGroupsOwnership')
+//                     .select('groupId')
+//                     .where({'userId':id})
+//                     .then(groups => {
+//                         res.status(200).json(groups)
+//                     })
+//             }
+//             else {
+//                 res.status(404).json({err: 'user id not found'})
+//             }
+//         })
+//         .catch(err => {
+//             res.status(500).json(err);
+//         })
+// });
 
 // server.get('/users/:id/groupsInvitedTo', (req,res) => {
 //     const id = req.params.id; //// or we could destructure it like so: const { id } = req.params;
