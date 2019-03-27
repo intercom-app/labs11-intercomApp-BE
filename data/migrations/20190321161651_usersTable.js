@@ -8,12 +8,10 @@ exports.up = function(knex, Promise) {
         //user first name
         tbl
             .string('firstName', 128)
-            .notNullable();
         
         //user last name
         tbl
             .string('lastName', 128)
-            .notNullable();
         
         //user display name
         tbl
@@ -22,6 +20,7 @@ exports.up = function(knex, Promise) {
         //user email
         tbl
             .string('email', 128)
+            .notNullable()
         
         //user phone number
         tbl
