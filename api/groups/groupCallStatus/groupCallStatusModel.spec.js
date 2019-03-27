@@ -9,7 +9,7 @@ describe('groupCallStatusModel', () => {
         it('should return call status by specified group ID', async () => {
             const res = await groupModel.getGroupCallStatus(id);
             expect(res.callStatus).toBeDefined();
-            expect(res.callStatus).toBe(1 || 0);
+            expect(res.callStatus === 0 || res.callStatus === 1).toBeTruthy();
 
         });
 

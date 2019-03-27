@@ -7,6 +7,8 @@ const groupOwnersRouter = require('./groupOwners/groupOwnersRouter');
 const groupActivitiesRouter = require('./groupActivities/groupActivitiesRouter');
 const groupCallStatusRouter = require('./groupCallStatus/groupCallStatusRouter');
 
+// api/groups
+
 router.get('/', async (req, res) => {
     try {
         const groups = await groupsModel.getAllGroups();
@@ -15,6 +17,19 @@ router.get('/', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+router.post('/', async (req, res) => {
+    let group = req.body;
+    try {
+        const newGroup = await groupsModel.addGroup(group);
+        res.status(201).json(newGroup);
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+// api/groups/:id
 
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
@@ -25,6 +40,8 @@ router.get('/:id', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+// api/groups/:id/<subroute>
 
 router.use('/:id/groupMembers', function(req, res, next) {
     req.groupId = req.params.id;
