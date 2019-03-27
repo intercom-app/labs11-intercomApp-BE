@@ -2,7 +2,7 @@ const request = require('supertest');
 
 const server = require('../../server');
 
-describe('groupActivitiesRouter', () => {
+describe('groupCallStatusRouter', () => {
 
     it('should set testing environment', () => {
         expect(process.env.DB_ENV).toBe('testing');

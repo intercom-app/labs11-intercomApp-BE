@@ -25,9 +25,9 @@ describe('groupActivitiesRouter', () => {
         it('should return list of acivities', () => {
             expect(res.body).toBeDefined();
             expect(res.body).toHaveLength;
-            expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBeDefined();
             expect(res.body[0].activity).toBeDefined();
+            expect(res.body[0].displayName).toBeDefined();
+            expect(res.body[0].createdAt).toBeDefined();
 
         })
 
