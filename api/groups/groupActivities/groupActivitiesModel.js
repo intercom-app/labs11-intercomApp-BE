@@ -15,8 +15,8 @@ module.exports = {
     },
 
     addGroupActivity: async function(activity) {
-        const [id] = await db('activities').insert(activity, 'id');
-        return db('activities').where({ id }).first();
+        await db('activities').insert(activity);
+        return this.getGroupActivity(activity.groupId);
     },
     
 };

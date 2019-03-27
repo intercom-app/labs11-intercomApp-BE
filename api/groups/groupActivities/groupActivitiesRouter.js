@@ -18,8 +18,8 @@ router.post('/', async (req, res) => {
     let groupId = req.groupId;
     let activity = {...req.body, groupId};
     try {
-        const newActivity = await groupsModel.addGroupActivity(activity);
-        res.status(200).json(newActivity);
+        const updatedActivities = await groupsModel.addGroupActivity(activity);
+        res.status(201).json(updatedActivities);
     } catch (err) {
         res.status(500).json(err);
     }

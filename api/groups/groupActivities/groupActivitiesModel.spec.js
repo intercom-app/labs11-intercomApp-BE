@@ -12,22 +12,23 @@ describe('groupActivitiesModel', () => {
         groupId: 1,
         userId: 1,
         activity: 'group created'
-    }
+    };
+
     const activity2 = {
         groupId: 1,
         userId: 2,
         activity: 'joined group'
-    }
+    };
 
     beforeEach(async () => {
         await db('groups').truncate();
         await db('groups').insert(group1);
+        await db('activities').truncate();
     })
 
     describe('getGroupActivity()', () => {
 
         it('should return list all activities by specified group ID', async () => {
-            await db('activities').truncate();
             await db('activities').insert(activity1);
             await db('activities').insert(activity2);
 
@@ -41,18 +42,14 @@ describe('groupActivitiesModel', () => {
 
     });
 
-    describe('addGroup()', () => {
+    describe('addGroupActivity()', () => {
 
-
-        it('should add new activity to db', async () => {
-            await db('activities').truncate();
-
-            const newActivity1 = await groupModel.addGroupActivity(activity1);
-            expect(newActivity1.id).toBe(1);
-            expect(newActivity1.groupId).toBe(activity1.groupId);
-            expect(newActivity1.userId).toBe(activity1.userId);
-            expect(newActivity1.activity).toBe(activity1.activity);
-            expect(newActivity1.createdAt).toBeDefined();
+        it('should add new activity and return update activities', async () => {
+            const res = await groupModel.addGroupActivity(activity1);
+            expect(res).toHaveLength(1);
+            expect(res[0].activity).toBe(activity1.activity);
+            expect(res[0].displayName).toBeDefined();
+            expect(res[0].createdAt).toBeDefined();
 
         });
 
