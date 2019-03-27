@@ -3,6 +3,7 @@ const router = require('express').Router();
 const usersModel = require('./usersModel');
 
 const userBelongedRouter = require('./userGroupsBelongedTo/userBelongedRouter');
+const userIvitedRouter = require('./userGroupsInvitedTo/userInvitedRouter');
 
 // api/users
 
@@ -62,5 +63,10 @@ router.use('/:id/groupsBelongedTo', function(req, res, next) {
     req.userId = req.params.id;
     next()
 }, userBelongedRouter);
+
+router.use('/:id/groupsInvitedTo', function(req, res, next) {
+    req.userId = req.params.id;
+    next()
+}, userIvitedRouter);
 
 module.exports = router;
