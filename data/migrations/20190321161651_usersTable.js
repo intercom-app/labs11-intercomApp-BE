@@ -16,11 +16,13 @@ exports.up = function(knex, Promise) {
         //user display name
         tbl
             .string('displayName', 128)
+            .notNullable()
         
         //user email
         tbl
             .string('email', 128)
             .notNullable()
+            .unique()
         
         //user phone number
         tbl
