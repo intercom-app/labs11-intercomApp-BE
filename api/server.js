@@ -3,6 +3,7 @@ const cors = require('cors');
 
 const teamRouter = require('./team/teamRouter');
 const usersRouter = require('./users/usersRouter');
+const groupRouter = require('./groups/groupsRouter');
 
 const db = require('../data/dbConfig.js');
 const server = express();
@@ -12,6 +13,7 @@ server.use(express.json());
 
 server.use('/api/team', teamRouter);
 server.use('/api/users', usersRouter);
+server.use('/api/groups', groupRouter);
 
 server.get('/', (req, res) => {
     res.send('Hello World!');
@@ -109,113 +111,6 @@ server.get('api/users/:id/groupsOwned', (req,res) => {
 //             res.status(500).json(err);
 //         })
 // });
-
-
-
-
-server.get('api/groups',(req,res) => {
-    db('groups')
-        .select().table('groups')
-        .then(groups => {
-            res.status(200).json(groups);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/groups/:id',(req,res) => {
-    const id = req.params.id;  
-    db('groups')
-        .where({id:id})
-        .select() 
-        .then(group => {
-            res.status(200).json(group);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/groups/:id/groupMembers',(req,res) => {
-    const id = req.params.id;  
-    db('groups')
-        .where({id:id})
-        .then(group => {
-            if (group) {
-                db('usersGroupsMembership')
-                    .select('userId')
-                    .where({'groupId':id})
-                    .then(users => {
-                        res.status(200).json(users)
-                    })
-            }
-            else {
-                res.status(404).json({err: 'group id not found'})
-            }
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/groups/:id/groupOwners',(req,res) => {
-    const id = req.params.id;  
-    db('groups')
-        .where({id:id})
-        .then(group => {
-            if (group) {
-                db('usersGroupsOwnership')
-                    .select('userId')
-                    .where({'groupId':id})
-                    .then(users => {
-                        res.status(200).json(users)
-                    })
-            }
-            else {
-                res.status(404).json({err: 'group id not found'})
-            }
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/groups/:id/activities',(req,res) => {
-    const id = req.params.id;  
-    db('groups')
-        .where({id:id})
-        .then(group => {
-            if (group) {
-                db('activities')
-                    // .select('userId')
-                    .select()
-                    .where({'groupId':id})
-                    .then(activities => {
-                        res.status(200).json(activities)
-                    })
-            }
-            else {
-                res.status(404).json({err: 'group id not found'})
-            }
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/groups/:id/callStatus',(req,res) => {
-    const id = req.params.id;  
-    db('groups')
-        .where({id:id})
-        .select('callStatus')
-        .then(callStatus => {
-            res.status(200).json(callStatus)
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
 
 
 server.get('api/activities',(req,res) => {
