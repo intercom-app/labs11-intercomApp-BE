@@ -41,7 +41,28 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// api/groups/:id/<subroute>
+router.put('/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        await groupsModel.updateGroup(id, {...req.body});
+        const updatedGroup = await groupsModel.getGroupByID(id);
+        res.status(200).json(updatedGroup);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const count = await groupsModel.deleteGroup(id);
+        res.status(200).json({ count: `${count} group deleted` });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+// api/groups/:id/<subroutes>
 
 router.use('/:id/groupMembers', function(req, res, next) {
     req.groupId = req.params.id;

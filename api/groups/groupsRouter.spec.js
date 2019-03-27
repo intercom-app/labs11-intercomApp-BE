@@ -2,6 +2,8 @@ const request = require('supertest');
 
 const server = require('../server');
 
+const db = require('../../data/dbConfig');
+
 describe('groupsRouter', () => {
 
     it('should set testing environment', () => {
@@ -10,6 +12,14 @@ describe('groupsRouter', () => {
 
     let res;
     const id = 1;
+    const group1 = {
+        name: 'Group1',
+    };
+
+    beforeEach( async () => {
+        await db('groups').truncate();
+        return res = await request(server).post('/api/groups').send(group1);
+    })
 
     describe('GET /', () => {
 
@@ -29,6 +39,28 @@ describe('groupsRouter', () => {
             expect(res.body[0].phoneNumber).toBeDefined();
             expect(res.body[0].callStatus).toBeDefined();
             expect(res.body[0].createdAt).toBeDefined();
+        })
+
+    });
+
+    describe('POST /', () => {
+
+        beforeEach( async () => {
+            await db('groups').truncate();
+            return res = await request(server).post('/api/groups').send(group1);
+        })
+
+        it('should return 201 OK with JSON resp', () => {
+            expect(res.status).toBe(201);
+            expect(res.type).toBe('application/json');
+        })
+
+        it('should return inserted group', () => {
+            expect(res.body.id).toBe(1);
+            expect(res.body.name).toBe(group1.name);
+            expect(res.body.phoneNumber).toBe(null);
+            expect(res.body.callStatus).toBe(0);
+            expect(res.body.createdAt).toBeDefined();
         })
 
     });
@@ -55,10 +87,16 @@ describe('groupsRouter', () => {
 
     });
 
-    describe('GET /:id/groupMembers', () => {
-        
-        beforeEach(async () => {
-            return res = await request(server).get(`/api/groups/${id}/groupMembers`)
+    describe('PUT /:id', () => {
+
+        const changes = {
+            name: 'GroupOne',
+            phoneNumber: 5555555555,
+            callStatus: true,
+        };
+
+        beforeEach( async () => {
+            return res = await request(server).put(`/api/groups/${id}`).send(changes)
         })
 
         it('should return 200 OK with JSON resp', async () => {
@@ -66,76 +104,40 @@ describe('groupsRouter', () => {
             expect(res.type).toBe('application/json');
         })
 
-        it('should return list of groupMembers displayNames with user and group id', () => {
-            expect(res.body).toBeDefined();
-            expect(res.body).toHaveLength;
-            expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBeDefined();
-            expect(res.body[0].displayName).toBeDefined();
+        it('should update group and return group', async () => {
+            expect(res.body.id).toBe(1);
+            expect(res.body.name).toBe(changes.name);
+            expect(res.body.phoneNumber).toBe(changes.phoneNumber);
+            expect(res.body.callStatus).toBe(1);
+            expect(res.body.createdAt).toBeDefined();
 
+            const origGroup = await db('groups').where({ name: group1.name }).first();
+            expect(origGroup).not.toBeDefined();
+
+            const updatedGroup = await db('groups').where({ name: changes.name }).first();
+            expect(updatedGroup).toBeDefined();
         })
 
     });
 
-    describe('GET /:id/groupOwners', () => {
+    describe('DELETE /:id', () => {
         
-        beforeEach(async () => {
-            return res = await request(server).get(`/api/groups/${id}/groupOwners`)
+        beforeEach( async () => {
+            return res = await request(server).delete(`/api/groups/${id}`)
         })
 
-        it('should return 200 OK with JSON resp', async () => {
+        it('should return 200 OK with correct JSON resp', async () => {
             expect(res.status).toBe(200);
             expect(res.type).toBe('application/json');
+            expect(res.body).toEqual({ count: '1 group deleted' });
         })
 
-        it('should return list of groupOwners displayNames with user and group id', () => {
-            expect(res.body).toBeDefined();
-            expect(res.body).toHaveLength;
-            expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBeDefined();
-            expect(res.body[0].displayName).toBeDefined();
-
-        })
-
-    });
-
-    describe('GET /:id/activities', () => {
-        
-        beforeEach(async () => {
-            return res = await request(server).get(`/api/groups/${id}/activities`)
-        })
-
-        it('should return 200 OK with JSON resp', async () => {
-            expect(res.status).toBe(200);
-            expect(res.type).toBe('application/json');
-        })
-
-        it('should return list of acivities', () => {
-            expect(res.body).toBeDefined();
-            expect(res.body).toHaveLength;
-            expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBeDefined();
-            expect(res.body[0].activity).toBeDefined();
-
-        })
-
-    });
-
-    describe('GET /:id/callStatus', () => {
-        
-        beforeEach(async () => {
-            return res = await request(server).get(`/api/groups/${id}/callStatus`)
-        })
-
-        it('should return 200 OK with JSON resp', async () => {
-            expect(res.status).toBe(200);
-            expect(res.type).toBe('application/json');
-        })
-
-        it('should return call status of group', () => {
-            expect(res.body.callStatus).toBeDefined();
-            expect(res.body.callStatus === 0 || res.body.callStatus === 1).toBeTruthy();
-
+        it('confirms user deleted from db', async () => {
+            const origGroup = await db('groups').where({ name: group1.name }).first();
+            expect(origGroup).not.toBeDefined();
+            
+            const dbGroups = await db('groups');
+            expect(dbGroups).toEqual([]);    
         })
 
     });

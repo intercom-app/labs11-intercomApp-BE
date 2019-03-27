@@ -13,6 +13,16 @@ module.exports = {
 
     getGroupByID: function(id) {
         return db('groups').where({ id }).first();
-    },    
+    }, 
     
+    updateGroup: function(id, changes) {
+        return db('groups')
+            .where({ id })
+            .update(changes)
+            .then(count => (count > 0 ? this.getGroupByID(id) : null));
+    },
+    
+    deleteGroup: function(id) {
+        return db('groups').where({ id }).del();
+    },
 };
