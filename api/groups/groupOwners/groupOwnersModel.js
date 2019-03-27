@@ -14,5 +14,15 @@ module.exports = {
             .join('users', 'usersGroupsOwnership.userId', 'users.id')
 
     },
+
+    addGroupOwner: async function(owner) {
+        await db('usersGroupsOwnership').insert(owner);
+        return this.getGroupOwners(owner.groupId)
+    },
+
+    deleteGroupOwner: async function(userId, groupId) {
+        await db('usersGroupsOwnership').where({ userId, groupId }).del();
+        return this.getGroupOwners(groupId)
+    },
     
 };

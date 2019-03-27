@@ -39,7 +39,7 @@ describe('groupMembersModel', () => {
 
     });
 
-    describe('addGroup()', () => {
+    describe('addGroupMember()', () => {
 
         it('should add new member to group', async () => {
             const resInit = await groupModel.getGroupMembers(1);
@@ -56,9 +56,9 @@ describe('groupMembersModel', () => {
 
     });
 
-    describe('deleteGroup()', () => {
+    describe('deleteGroupMember()', () => {
 
-        it('should delete the group by sepcified id', async () => {
+        it('should delete the group member by sepcified id and return updated group', async () => {
             await db('usersGroupsMembership').insert(newMember1);
             await db('usersGroupsMembership').insert(newMember2);
 
