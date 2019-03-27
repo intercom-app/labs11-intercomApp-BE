@@ -2,6 +2,11 @@ const router = require('express').Router();
 
 const groupsModel = require('./groupsModel');
 
+const groupMembersRouter = require('./groupMembers/groupMembersRouter');
+const groupOwnersRouter = require('./groupOwners/groupOwnersRouter');
+const groupActivitiesRouter = require('./groupActivities/groupActivitiesRouter');
+const groupCallStatusRouter = require('./groupCallStatus/groupCallStatusRouter');
+
 router.get('/', async (req, res) => {
     try {
         const groups = await groupsModel.getAllGroups();
@@ -21,44 +26,24 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/:id/groupMembers', async (req, res) => {
-    const id = req.params.id;
-    try {
-        const members = await groupsModel.getGroupMembers(id);
-        res.status(200).json(members);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.use('/:id/groupMembers', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupMembersRouter);
 
-router.get('/:id/groupOwners', async (req, res) => {
-    const id = req.params.id;
-    try {
-        const owners = await groupsModel.getGroupOwners(id);
-        res.status(200).json(owners);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.use('/:id/groupOwners', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupOwnersRouter);
 
-router.get('/:id/activities', async (req, res) => {
-    const id = req.params.id;
-    try {
-        const activities = await groupsModel.getGroupActivity(id);
-        res.status(200).json(activities);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.use('/:id/activities', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupActivitiesRouter);
 
-router.get('/:id/callStatus', async (req, res) => {
-    const id = req.params.id;
-    try {
-        const callStatus = await groupsModel.getGroupCallStatus(id);
-        res.status(200).json(callStatus);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.use('/:id/callStatus', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupCallStatusRouter);
 
 module.exports = router;
