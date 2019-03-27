@@ -14,6 +14,9 @@ server.use(cors());
 server.use(express.json());
 
 
+const VoiceResponse = require('twilio').twiml.VoiceResponse;
+const urlencoded = require('body-parser').urlencoded;
+
 
 server.use('/api/team', teamRouter);
 server.use('/api/users', usersRouter);
@@ -148,5 +151,20 @@ server.get('api/activities/:id',(req,res) => {
             res.status(500).json(err);
         })
 });
+
+server.post('/api/voice', (request, response) => {
+    // Use the Twilio Node.js SDK to build an XML response
+    const twiml = new VoiceResponse();
+  
+    // Start with a <Dial> verb
+    const dial = twiml.dial();
+      dial.conference('My conference', {
+        startConferenceOnEnter: true,
+      });
+  
+    // Render the response as XML in reply to the webhook request
+    response.type('text/xml');
+    response.send(twiml.toString());
+  });
 
 module.exports = server;
