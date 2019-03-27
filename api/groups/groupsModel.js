@@ -6,42 +6,23 @@ module.exports = {
         return db('groups');
     },
 
+    addGroup: async function(group) {
+        const [id] = await db('groups').insert(group, 'id');
+        return db('groups').where({ id }).first();
+    },
+
     getGroupByID: function(id) {
         return db('groups').where({ id }).first();
-    },    
-
-    getGroupMembers: function(groupId) {
-
-        return db('usersGroupsMembership')
-            .select(
-                'usersGroupsMembership.groupId', 
-                'usersGroupsMembership.userId', 
-                'users.displayName',
-            )
-            .where({ groupId })
-            .join('users', 'usersGroupsMembership.userId', 'users.id')
-
-    },
-
-    getGroupOwners: function(groupId) {
-
-        return db('usersGroupsOwnership')
-            .select(
-                'usersGroupsOwnership.groupId', 
-                'usersGroupsOwnership.userId', 
-                'users.displayName',
-            )
-            .where({ groupId })
-            .join('users', 'usersGroupsOwnership.userId', 'users.id')
-
-    },
-
-    getGroupActivity: function(groupId) {
-        return db('activities').where({ groupId })
-    },
-
-    getGroupCallStatus: function(id) {
-        return db('groups').select('callStatus').where({ id }).first();
+    }, 
+    
+    updateGroup: function(id, changes) {
+        return db('groups')
+            .where({ id })
+            .update(changes)
+            .then(count => (count > 0 ? this.getGroupByID(id) : null));
     },
     
+    deleteGroup: function(id) {
+        return db('groups').where({ id }).del();
+    },
 };

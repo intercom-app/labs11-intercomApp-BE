@@ -2,6 +2,13 @@ const router = require('express').Router();
 
 const groupsModel = require('./groupsModel');
 
+const groupMembersRouter = require('./groupMembers/groupMembersRouter');
+const groupOwnersRouter = require('./groupOwners/groupOwnersRouter');
+const groupActivitiesRouter = require('./groupActivities/groupActivitiesRouter');
+const groupCallStatusRouter = require('./groupCallStatus/groupCallStatusRouter');
+
+// api/groups
+
 router.get('/', async (req, res) => {
     try {
         const groups = await groupsModel.getAllGroups();
@@ -10,6 +17,19 @@ router.get('/', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+router.post('/', async (req, res) => {
+    let group = req.body;
+    try {
+        const newGroup = await groupsModel.addGroup(group);
+        res.status(201).json(newGroup);
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+// api/groups/:id
 
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
@@ -21,44 +41,47 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/:id/groupMembers', async (req, res) => {
+router.put('/:id', async (req, res) => {
     const id = req.params.id;
     try {
-        const members = await groupsModel.getGroupMembers(id);
-        res.status(200).json(members);
+        await groupsModel.updateGroup(id, {...req.body});
+        const updatedGroup = await groupsModel.getGroupByID(id);
+        res.status(200).json(updatedGroup);
     } catch (err) {
         res.status(500).json(err);
     }
 });
 
-router.get('/:id/groupOwners', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const id = req.params.id;
     try {
-        const owners = await groupsModel.getGroupOwners(id);
-        res.status(200).json(owners);
+        const count = await groupsModel.deleteGroup(id);
+        res.status(200).json({ count: `${count} group deleted` });
     } catch (err) {
         res.status(500).json(err);
     }
 });
 
-router.get('/:id/activities', async (req, res) => {
-    const id = req.params.id;
-    try {
-        const activities = await groupsModel.getGroupActivity(id);
-        res.status(200).json(activities);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+// api/groups/:id/<subroutes>
 
-router.get('/:id/callStatus', async (req, res) => {
-    const id = req.params.id;
-    try {
-        const callStatus = await groupsModel.getGroupCallStatus(id);
-        res.status(200).json(callStatus);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
+router.use('/:id/groupMembers', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupMembersRouter);
+
+router.use('/:id/groupOwners', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupOwnersRouter);
+
+router.use('/:id/activities', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupActivitiesRouter);
+
+router.use('/:id/callStatus', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupCallStatusRouter);
 
 module.exports = router;
