@@ -1,0 +1,52 @@
+exports.seed = function (knex, Promise) {
+  // Deletes ALL existing entries
+  return knex('usersGroupsInvitations').del()
+    .then(function () {
+      // Inserts seed entries
+      return knex('usersGroupsInvitations').insert([
+        { userId: 2, groupID: 11 },
+        { userId: 3, groupID: 16 },
+        { userId: 4, groupID: 18 },
+        { userId: 5, groupID: 18 },
+        { userId: 3, groupID: 9 },
+        { userId: 2, groupID: 8 },
+        { userId: 5, groupID: 9 },
+        { userId: 3, groupID: 1 },
+        { userId: 3, groupID: 5 },
+        { userId: 2, groupID: 17 },
+        { userId: 4, groupID: 6 },
+        { userId: 2, groupID: 6 },
+        { userId: 3, groupID: 14 },
+        { userId: 3, groupID: 14 },
+        { userId: 4, groupID: 3 },
+        { userId: 3, groupID: 18 },
+        { userId: 5, groupID: 14 },
+        { userId: 3, groupID: 16 },
+        { userId: 2, groupID: 2 },
+        { userId: 4, groupID: 16 },
+        { userId: 3, groupID: 19 },
+        { userId: 1, groupID: 3 },
+        { userId: 3, groupID: 9 },
+        { userId: 3, groupID: 3 },
+        { userId: 2, groupID: 11 },
+        { userId: 4, groupID: 1 },
+        { userId: 1, groupID: 9 },
+        { userId: 1, groupID: 4 },
+        { userId: 4, groupID: 11 },
+        { userId: 4, groupID: 7 },
+        { userId: 4, groupID: 1 },
+        { userId: 3, groupID: 7 },
+        { userId: 3, groupID: 18 },
+        { userId: 1, groupID: 20 },
+        { userId: 4, groupID: 2 },
+        { userId: 1, groupID: 13 },
+        { userId: 4, groupID: 9 },
+        { userId: 5, groupID: 7 },
+        { userId: 5, groupID: 5 },
+        { userId: 5, groupID: 20 },
+        { userId: 2, groupID: 11 },
+        { userId: 4, groupID: 14 },
+        { userId: 4, groupID: 3 },
+        { userId: 4, groupID: 8 }]);
+    });
+};
