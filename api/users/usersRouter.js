@@ -57,6 +57,27 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.put('/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        await usersModel.updateUser(id, {...req.body});
+        const updatedUser = await usersModel.getUserById(id);
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const count = await usersModel.deleteUser(id);
+        res.status(200).json({ count: `${count} user deleted` });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 // api/groups/:id/<subroutes>
 
 router.use('/:id/groupsBelongedTo', function(req, res, next) {
