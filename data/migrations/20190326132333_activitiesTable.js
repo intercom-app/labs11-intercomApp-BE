@@ -9,14 +9,16 @@ exports.up = function(knex, Promise) {
             .integer('groupId')
             .notNullable()
             .references('id')
-            .inTable('groups');
+            .inTable('groups')
+            .onDelete('CASCADE');
         
         //foreign key: userId
         tbl
             .integer('userId')
             .notNullable()
             .references('id')
-            .inTable('users');
+            .inTable('users')
+            .onDelete('CASCADE');
         
         //activity
         tbl
