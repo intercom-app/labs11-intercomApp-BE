@@ -4,6 +4,7 @@ const usersModel = require('./usersModel');
 
 const userBelongedRouter = require('./userGroupsBelongedTo/userBelongedRouter');
 const userIvitedRouter = require('./userGroupsInvitedTo/userInvitedRouter');
+const userOwnedRouter = require('./userGroupsOwned/userOwnedRouter');
 
 // api/users
 
@@ -89,5 +90,11 @@ router.use('/:id/groupsInvitedTo', function(req, res, next) {
     req.userId = req.params.id;
     next()
 }, userIvitedRouter);
+
+router.use('/:id/groupsOwned', function(req, res, next) {
+    req.userId = req.params.id;
+    next()
+}, userOwnedRouter);
+
 
 module.exports = router;
