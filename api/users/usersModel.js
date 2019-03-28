@@ -16,6 +16,17 @@ module.exports = {
     addUser: async function (user) {
         const [id] = await db('users').insert(user, 'id');
         return this.getUserById(id)
-    }
+    },
+
+    updateUser: function(id, changes) {
+        return db('users')
+            .where({ id })
+            .update(changes)
+            .then(count => (count > 0 ? this.getUserById(id) : null));
+    },
+    
+    deleteUser: function(id) {
+        return db('users').where({ id }).del();
+    },
 
 };
