@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
 
         //group phone number
         tbl
-            .integer('phoneNumber', 9)
+            .string('phoneNumber', 12)
 
         //group call status
         tbl
