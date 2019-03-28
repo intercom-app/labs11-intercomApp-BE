@@ -1,8 +1,12 @@
 const request = require('supertest');
 
 const server = require('../server');
-
 const db = require('../../data/dbConfig');
+const { 
+    dbReset, 
+    user1, user2, user3, 
+    user1Exists, user2Exists, user3NoExists 
+} = require('../serverTestReset');
 
 describe('usersRouter', () => {
 
@@ -10,48 +14,11 @@ describe('usersRouter', () => {
         expect(process.env.DB_ENV).toBe('testing');
     });
 
-    const user1 = {
-        firstName: 'Chelsea',
-        lastName: 'Tolnai',
-        displayName: 'CATolnai',
-        email: 'example@test.com'
-    };
-
-    const user2 = {
-        firstName: 'Erinc',
-        lastName: 'Emer',
-        displayName: 'EEmer',
-        email: 'EEmer@test.com'
-    };
-
-    const user3 = {
-        firstName: 'Stephen',
-        lastName: 'Fargali',
-        displayName: 'Stefarg',
-        email: 'Stefarg@test.com'
-    };
-
-    const user1Exists = {
-        nickname: 'CATolnai',
-        email: 'example@test.com'
-    }
-
-    const user2Exists = {
-        nickname: 'EEmer',
-        email: 'EEmer@test.com'
-    };
-
-    const user3NoExists = {
-        nickname: 'Stefarg',
-        email: 'Stefarg@test.com'
-    };
-
     let res;
+    const id = 1;
 
     beforeEach(async () => {
-        await db('users').truncate();
-        await db('users').insert(user1);
-        await db('users').insert(user2);
+        await dbReset();
     })
 
     describe('GET /', () => {
@@ -99,7 +66,7 @@ describe('usersRouter', () => {
             const res = await request(server).post('/api/users').send(user3NoExists);
             expect(res.status).toBe(201);
             expect(res.type).toBe('application/json');
-            expect(res.body.id).toBe(3);
+            expect(res.body.id).toBeDefined();
             expect(res.body.displayName).toBe(user3.displayName);            
             expect(res.body.email).toBe(user3.email);
         })
@@ -109,7 +76,7 @@ describe('usersRouter', () => {
     describe('GET /:id', () => {
 
         beforeEach(async () => {
-            return res = await request(server).get(`/api/users/${1}`)
+            return res = await request(server).get(`/api/users/${id}`)
         })
 
         it('should return 200 OK with JSON resp', async () => {
@@ -118,7 +85,7 @@ describe('usersRouter', () => {
         })
 
         it('should return the requested user', () => {
-            expect(res.body.id).toBe(1);
+            expect(res.body.id).toBe(id);
             expect(res.body.firstName).toBe(user1.firstName);
             expect(res.body.lastName).toBe(user1.lastName);
             expect(res.body.displayName).toBe(user1.displayName);            
@@ -130,8 +97,56 @@ describe('usersRouter', () => {
             
         })
 
-
     })
+
+    describe('PUT /:id', () => {
+
+        const changes = {
+            displayName: 'Chelsea Tolnai',
+            phoneNumber: 5555555555,
+            billingSubcription: 'premium'
+        };
+
+        beforeEach( async () => {
+            return res = await request(server).put(`/api/users/${id}`).send(changes)
+        })
+
+        it('should return 200 OK with JSON resp', async () => {
+            expect(res.status).toBe(200);
+            expect(res.type).toBe('application/json');
+        })
+
+        it('should update user and return user', async () => {
+            expect(res.body.id).toBe(id);
+            expect(res.body.firstName).toBe(user1.firstName);
+            expect(res.body.lastName).toBe(user1.lastName);
+            expect(res.body.displayName).toBe(changes.displayName);            
+            expect(res.body.email).toBe(user1.email);
+            expect(res.body.phoneNumber).toBe(changes.phoneNumber);
+            expect(res.body.callStatus).toBe(0);
+            expect(res.body.billingSubcription).toBe(changes.billingSubcription);
+            expect(res.body.createdAt).toBeDefined();
+        })
+
+    });
+
+    describe('DELETE /:id', () => {
+
+        it('should return 200 OK with correct JSON resp and confirm user deleted', async () => {
+            res = await request(server).delete(`/api/users/${id}`)
+
+            expect(res.status).toBe(200);
+            expect(res.type).toBe('application/json');
+            expect(res.body).toEqual({ count: '1 user deleted' });
+
+            const origUser = await db('users').where({ displayName: user1.displayName }).first();
+            expect(origUser).not.toBeDefined();
+            
+            const dbUsers = await db('users');
+            expect(dbUsers).toHaveLength(1);    
+        })
+
+    });
 
 
 });

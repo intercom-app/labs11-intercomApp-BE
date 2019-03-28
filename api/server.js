@@ -14,7 +14,7 @@ server.use(cors());
 server.use(express.json());
 
 
-const VoiceResponse = require('twilio').twiml.VoiceResponse;
+// const VoiceResponse = require('twilio').twiml.VoiceResponse;
 const urlencoded = require('body-parser').urlencoded;
 
 

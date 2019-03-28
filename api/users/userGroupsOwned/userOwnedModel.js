@@ -4,13 +4,13 @@ module.exports = {
 
     getGroups: function(userId) {
 
-        return db('usersGroupsInvitations')
+        return db('usersGroupsOwnership')
             .select(
-                'usersGroupsInvitations.groupId',
+                'usersGroupsOwnership.groupId',
                 'groups.name as GroupName',
             )
             .where({ userId })
-            .join('groups', 'usersGroupsInvitations.groupId', 'groups.id')
+            .join('groups', 'usersGroupsOwnership.groupId', 'groups.id')
     }
 
 };

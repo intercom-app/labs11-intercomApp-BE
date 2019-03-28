@@ -1,8 +1,7 @@
 const request = require('supertest');
 
 const server = require('../../server');
-
-const db = require('../../../data/dbConfig');
+const { dbReset, user1, user2, newOwner1, newOwner2 } = require('../../serverTestReset.js');
 
 describe('groupOwnersRouter', () => {
 
@@ -10,24 +9,11 @@ describe('groupOwnersRouter', () => {
         expect(process.env.DB_ENV).toBe('testing');
     });
 
-    const group1 = {
-        name: 'Group1',
-    };
-
-    const newOwner1 = {
-        userId: 1,
-    };
-
-    const newOwner2 = {
-        userId: 2,
-    };
-
-    let id, res;
+    let res;
+    const id = 1;
 
     beforeEach(async () => {
-        await db('groups').truncate();
-        [id] = await db('groups').insert(group1);
-        return id;
+        await dbReset();
     })
 
     describe('GET /:id/groupOwners', () => {
@@ -43,10 +29,10 @@ describe('groupOwnersRouter', () => {
 
         it('should return list of groupOwners displayNames with user and group id', () => {
             expect(res.body).toBeDefined();
-            expect(res.body).toHaveLength;
+            expect(res.body).toHaveLength(1);
             expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBeDefined();
-            expect(res.body[0].displayName).toBeDefined();
+            expect(res.body[0].userId).toBe(newOwner1.userId);
+            expect(res.body[0].displayName).toBe(user1.displayName);
 
         })
 
@@ -55,8 +41,7 @@ describe('groupOwnersRouter', () => {
     describe('POST /:id/groupOwners', () => {
 
         beforeEach( async () => {
-            await db('usersGroupsOwnership').truncate();
-            return res = await request(server).post(`/api/groups/${id}/groupOwners`).send(newOwner1);
+            return res = await request(server).post(`/api/groups/${id}/groupOwners`).send(newOwner2);
         })
 
         it('should return 201 OK with JSON resp', () => {
@@ -65,10 +50,10 @@ describe('groupOwnersRouter', () => {
         })
 
         it('should return updated group with new owners', () => {
-            expect(res.body).toHaveLength(1);
-            expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBe(newOwner1.userId);
-            expect(res.body[0].displayName).toBeDefined();
+            expect(res.body).toHaveLength(2);
+            expect(res.body[1].groupId).toBe(id);
+            expect(res.body[1].userId).toBe(newOwner2.userId);
+            expect(res.body[1].displayName).toBe(user2.displayName);
 
         })
 
@@ -77,8 +62,6 @@ describe('groupOwnersRouter', () => {
     describe('DELETE /:id/groupOwners/:id', () => {
         
         beforeEach( async () => {
-            await db('usersGroupsOwnership').truncate();
-            await request(server).post(`/api/groups/${id}/groupOwners`).send(newOwner1)
             await request(server).post(`/api/groups/${id}/groupOwners`).send(newOwner2);
             return res = await request(server).delete(`/api/groups/${id}/groupOwners/${newOwner2.userId}`)
         })

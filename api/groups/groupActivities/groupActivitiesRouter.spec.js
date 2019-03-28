@@ -1,8 +1,8 @@
 const request = require('supertest');
 
 const server = require('../../server');
-
 const db = require('../../../data/dbConfig');
+const { dbReset, activity1, user1 } = require('../../serverTestReset.js');
 
 describe('groupActivitiesRouter', () => {
 
@@ -10,14 +10,12 @@ describe('groupActivitiesRouter', () => {
         expect(process.env.DB_ENV).toBe('testing');
     });
 
-    const activity1 = {
-        groupId: 1,
-        userId: 1,
-        activity: 'group created'
-    };
-
     let res;
     const id = 1;
+
+    beforeEach(async () => {
+        await dbReset();
+    })
 
     describe('GET /:id/activities', () => {
         
@@ -33,8 +31,8 @@ describe('groupActivitiesRouter', () => {
         it('should return list of acivities', () => {
             expect(res.body).toBeDefined();
             expect(res.body).toHaveLength;
-            expect(res.body[0].activity).toBeDefined();
-            expect(res.body[0].displayName).toBeDefined();
+            expect(res.body[0].activity).toBe(activity1.activity);
+            expect(res.body[0].displayName).toBe(user1.displayName);
             expect(res.body[0].createdAt).toBeDefined();
 
         })
@@ -56,7 +54,7 @@ describe('groupActivitiesRouter', () => {
         it('should return updated activities with new activity', () => {
             expect(res.body).toHaveLength(1);
             expect(res.body[0].activity).toBe(activity1.activity);
-            expect(res.body[0].displayName).toBeDefined();
+            expect(res.body[0].displayName).toBe(user1.displayName);
             expect(res.body[0].createdAt).toBeDefined();
 
         })
