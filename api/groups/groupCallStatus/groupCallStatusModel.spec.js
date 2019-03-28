@@ -1,28 +1,20 @@
 const groupModel = require('./groupCallStatusModel.js');
-
-const db = require('../../../data/dbConfig.js');
+const { dbReset } = require('../../serverTestReset.js');
 
 describe('groupCallStatusModel', () => {
 
-    const group1 = {
-        name: 'Group1',
-    };
-
-    let id;
+    let res;
+    const id = 1;
 
     beforeEach(async () => {
-        await db('groups').truncate();
-        [id] = await db('groups').insert(group1);
-        return id;
+        await dbReset();
     })
 
     describe('getGroupCallStatus()', () => {
 
         it('should return call status by specified group ID', async () => {
-            const res = await groupModel.getGroupCallStatus(id);
-            expect(res.callStatus).toBeDefined();
+            res = await groupModel.getGroupCallStatus(id);
             expect(res.callStatus).toBe(0);
-
         });
 
     });
@@ -30,8 +22,6 @@ describe('groupCallStatusModel', () => {
     describe('updateCallStatus()', () => {
 
         it('should update the group call status by sepcified id', async () => {
-            let statusInit = await groupModel.getGroupCallStatus(id);
-            expect(statusInit.callStatus).toBe(0);
 
             const changes = {
                 callStatus: true,
@@ -39,8 +29,8 @@ describe('groupCallStatusModel', () => {
 
             await groupModel.updateCallStatus(id, changes);
             
-            const statusFinal = await db('groups').where({ id }).first();
-            expect(statusFinal.callStatus).toBe(1);
+            res = await groupModel.getGroupCallStatus(id);
+            expect(res.callStatus).toBe(1);
 
         });
 

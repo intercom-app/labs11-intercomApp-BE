@@ -1,25 +1,21 @@
 const groupModel = require('./groupsModel.js');
 const db = require('../../data/dbConfig.js');
+const { dbReset, group1 } = require('../serverTestReset');
 
 describe('groupModel', () => {
 
-    const group1 = {
-        name: 'Group1',
-    };
-
-    let id;
+    let res;
+    const id = 1;
 
     beforeEach(async () => {
-        await db('groups').truncate();
-        [id] = await db('groups').insert(group1);
-        return id;
+        await dbReset();
     })
 
     describe('getAllGroups()', () => {
 
         it('should return list of all groups with rquired db schema', async () => {
-            const res = await groupModel.getAllGroups();
-            expect(res).toHaveLength;
+            res = await groupModel.getAllGroups();
+            expect(res).toHaveLength(2);
             expect(res[0].id).toBe(id);
             expect(res[0].name).toBeDefined();
             expect(res[0].phoneNumber).toBeDefined();
@@ -32,18 +28,14 @@ describe('groupModel', () => {
 
     describe('addGroup()', () => {
 
-        beforeEach(async () => {
-            await db('groups').truncate()
-        })
-
         it('should add new group to db', async () => {
-
-            const newGroup1 = await groupModel.addGroup(group1);
-            expect(newGroup1.id).toBe(id);
-            expect(newGroup1.name).toBe(group1.name);
-            expect(newGroup1.phoneNumber).toBe(null);
-            expect(newGroup1.callStatus).toBe(0);
-            expect(newGroup1.createdAt).toBeDefined();
+            await db('groups').truncate()
+            res = await groupModel.addGroup(group1);
+            expect(res.id).toBe(id);
+            expect(res.name).toBe(group1.name);
+            expect(res.phoneNumber).toBe(null);
+            expect(res.callStatus).toBe(0);
+            expect(res.createdAt).toBeDefined();
 
         });
 
@@ -52,12 +44,12 @@ describe('groupModel', () => {
     describe('getGroupByID()', () => {
 
         it('should return list of one group by specified ID', async () => {
-            const res = await groupModel.getGroupByID(id);
+            res = await groupModel.getGroupByID(id);
             expect(res).toBeDefined();
             expect(res.id).toBe(id);
-            expect(res.name).toBeDefined();
-            expect(res.phoneNumber).toBeDefined();
-            expect(res.callStatus).toBeDefined();
+            expect(res.name).toBe(group1.name);
+            expect(res.phoneNumber).toBe(null);
+            expect(res.callStatus).toBe(0);
             expect(res.createdAt).toBeDefined();
 
         });
@@ -96,18 +88,17 @@ describe('groupModel', () => {
 
         it('should delete the group by sepcified id', async () => {
             let groups = await db('groups');
-            expect(groups).toHaveLength;
+            expect(groups).toHaveLength(2);
             let group = await db('groups').where({ id }).first();
             expect(group).toBeDefined();
 
             res = await groupModel.deleteGroup(id);
-            
-            groups = await db('groups');
-            expect(groups).not.toHaveLength;
-            group = await db('groups').where({ id }).first();
-            expect(group).toBeUndefined();
-
             expect(res).toBe(1);
+
+            groups = await db('groups');
+            expect(groups).toHaveLength(1);
+            group = await db('groups').where({ id }).first();
+            expect(group).not.toBeDefined();
 
         });
 

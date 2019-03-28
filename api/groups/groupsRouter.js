@@ -4,8 +4,10 @@ const groupsModel = require('./groupsModel');
 
 const groupMembersRouter = require('./groupMembers/groupMembersRouter');
 const groupOwnersRouter = require('./groupOwners/groupOwnersRouter');
+const groupInviteesRouter = require('./groupInvitees/groupInviteesRouter');
 const groupActivitiesRouter = require('./groupActivities/groupActivitiesRouter');
 const groupCallStatusRouter = require('./groupCallStatus/groupCallStatusRouter');
+const groupCallParticipants = require('./groupCallParticipants/groupCallParticipantsRouter');
 
 // api/groups
 
@@ -74,6 +76,11 @@ router.use('/:id/groupOwners', function(req, res, next) {
     next()
 }, groupOwnersRouter);
 
+router.use('/:id/groupInvitees', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupInviteesRouter);
+
 router.use('/:id/activities', function(req, res, next) {
     req.groupId = req.params.id;
     next()
@@ -83,5 +90,10 @@ router.use('/:id/callStatus', function(req, res, next) {
     req.groupId = req.params.id;
     next()
 }, groupCallStatusRouter);
+
+router.use('/:id/callParticipants', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupCallParticipants);
 
 module.exports = router;
