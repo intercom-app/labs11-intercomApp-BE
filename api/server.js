@@ -14,8 +14,8 @@ server.use(cors());
 server.use(express.json());
 
 
-// const VoiceResponse = require('twilio').twiml.VoiceResponse;
-// const urlencoded = require('body-parser').urlencoded;
+const VoiceResponse = require('twilio').twiml.VoiceResponse;
+const urlencoded = require('body-parser').urlencoded;
 
 
 server.use('/api/team', teamRouter);
@@ -27,59 +27,8 @@ server.get('/', (req, res) => {
 });
 
 server.post('/test', (req, res) => {
-    console.log('req', req.body)
-    // console.log('res', res)
-    
-    
-    // res.send('Hello World!');
-});
-
-
-// server.get('api/users/:id/groupsOwned', (req,res) => {
-//     const id = req.params.id;  
-//     db('users')
-//         .where({id:id})
-//         .then(user => {
-//             if (user) {
-//                 db('usersGroupsOwnership')
-//                     .select('groupId')
-//                     .where({'userId':id})
-//                     .then(groups => {
-//                         res.status(200).json(groups)
-//                     })
-//             }
-//             else {
-//                 res.status(404).json({err: 'user id not found'})
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json(err);
-//         })
-// });
-
-
-server.get('api/activities',(req,res) => {
-    db('activities')
-        .select().table('activities')
-        .then(activities => {
-            res.status(200).json(activities);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
-});
-
-server.get('api/activities/:id',(req,res) => {
-    const id = req.params.id;  
-    db('activities')
-        .where({id:id})
-        .select() 
-        .then(activity => {
-            res.status(200).json(activity);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        })
+    console.log('req', req.body)    
+    res.send('Hello World!');
 });
 
 server.post('/api/voice', (request, response) => {
