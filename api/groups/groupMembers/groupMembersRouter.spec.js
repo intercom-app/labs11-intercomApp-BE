@@ -1,8 +1,7 @@
 const request = require('supertest');
 
 const server = require('../../server');
-
-const db = require('../../../data/dbConfig');
+const { dbReset, user1, user2, newMember1, newMember2 } = require('../../serverTestReset.js');
 
 describe('groupMembersRouter', () => {
 
@@ -10,24 +9,11 @@ describe('groupMembersRouter', () => {
         expect(process.env.DB_ENV).toBe('testing');
     });
 
-    const group1 = {
-        name: 'Group1',
-    };
-
-    const newMember1 = {
-        userId: 1,
-    };
-
-    const newMember2 = {
-        userId: 2,
-    };
-
-    let id, res;
+    let res;
+    const id = 1;
 
     beforeEach(async () => {
-        await db('groups').truncate();
-        [id] = await db('groups').insert(group1);
-        return id;
+        await dbReset();
     })
 
     describe('GET /:id/groupMembers', () => {
@@ -43,11 +29,10 @@ describe('groupMembersRouter', () => {
 
         it('should return list of groupMembers displayNames with user and group id', () => {
             expect(res.body).toBeDefined();
-            expect(res.body).toHaveLength;
+            expect(res.body).toHaveLength(1);
             expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBeDefined();
-            expect(res.body[0].displayName).toBeDefined();
-
+            expect(res.body[0].userId).toBe(newMember1.userId);
+            expect(res.body[0].displayName).toBe(user1.displayName);
         })
 
     });
@@ -55,8 +40,7 @@ describe('groupMembersRouter', () => {
     describe('POST /:id/groupMembers', () => {
 
         beforeEach( async () => {
-            await db('usersGroupsMembership').truncate();
-            return res = await request(server).post(`/api/groups/${id}/groupMembers`).send(newMember1);
+            return res = await request(server).post(`/api/groups/${id}/groupMembers`).send(newMember2);
         })
 
         it('should return 201 OK with JSON resp', () => {
@@ -65,11 +49,10 @@ describe('groupMembersRouter', () => {
         })
 
         it('should return updated group with new members', () => {
-            expect(res.body).toHaveLength(1);
-
-            expect(res.body[0].groupId).toBe(id);
-            expect(res.body[0].userId).toBe(newMember1.userId);
-            expect(res.body[0].displayName).toBeDefined();
+            expect(res.body).toHaveLength(2);
+            expect(res.body[1].groupId).toBe(id);
+            expect(res.body[1].userId).toBe(newMember2.userId);
+            expect(res.body[1].displayName).toBe(user2.displayName);
 
         })
 
@@ -78,8 +61,6 @@ describe('groupMembersRouter', () => {
     describe('DELETE /:id/groupMembers/:id', () => {
         
         beforeEach( async () => {
-            await db('usersGroupsMembership').truncate();
-            await request(server).post(`/api/groups/${id}/groupMembers`).send(newMember1)
             await request(server).post(`/api/groups/${id}/groupMembers`).send(newMember2);
             return res = await request(server).delete(`/api/groups/${id}/groupMembers/${newMember2.userId}`)
         })
@@ -91,7 +72,6 @@ describe('groupMembersRouter', () => {
 
         it('return updated group without deleted member', async () => {
             expect(res.body).toHaveLength(1);
-
             expect(res.body[1]).not.toBeDefined();
         })
 
