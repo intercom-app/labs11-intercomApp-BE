@@ -59,6 +59,21 @@ describe('groupCalParticipantsRouter', () => {
 
     });
 
+    describe('DELETE /:id/callParticipants/', () => {
+        
+        beforeEach( async () => {
+            await request(server).post(`/api/groups/${id}/callParticipants`).send(newParticipant2);
+            return res = await request(server).delete(`/api/groups/${id}/callParticipants`)
+        })
+
+        it('should return 200 OK with correct JSON resp', async () => {
+            expect(res.status).toBe(200);
+            expect(res.type).toBe('application/json');
+            expect(res.body).toEqual({ count: `${2} user(s) removed from participants` });
+        })
+
+    });
+
     describe('DELETE /:id/callParticipants/:id', () => {
         
         beforeEach( async () => {

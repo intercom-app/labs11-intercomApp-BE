@@ -37,6 +37,23 @@ describe('groupCallParticipantsModel', () => {
 
     });
 
+    describe('deleteAllParticipants()', () => {
+
+        it('should delete all call participants by sepcified group id and return count', async () => {
+            await db('usersGroupsParticipants').insert(newParticipant2);
+
+            res = await groupModel.getParticipants(id);
+            expect(res).toHaveLength(2);
+
+            await groupModel.deleteAllParticipants(newParticipant2.groupId);
+            
+            res = await groupModel.getParticipants(id);
+            expect(res).toEqual([]);
+
+        });
+
+    });
+
     describe('deleteParticipant()', () => {
 
         it('should delete the call participant by sepcified id and return updated group', async () => {

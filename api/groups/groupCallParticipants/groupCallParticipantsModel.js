@@ -20,6 +20,10 @@ module.exports = {
         return this.getParticipants(participant.groupId)
     },
 
+    deleteAllParticipants: async function(groupId) {
+        return await db('usersGroupsParticipants').where({ groupId }).del();
+    },
+
     deleteParticipant: async function(userId, groupId) {
         await db('usersGroupsParticipants').where({ userId, groupId }).del();
         return this.getParticipants(groupId)

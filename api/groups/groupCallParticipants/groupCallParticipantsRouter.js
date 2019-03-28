@@ -25,6 +25,17 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.delete('/', async (req, res) => {
+    let groupId = req.groupId;
+    try {
+        const count = await groupsModel.deleteAllParticipants(groupId);
+        res.status(200).json({ count: `${count} user(s) removed from participants` });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+
 // api/groups/:id/callParticipants/:id
 
 router.delete('/:id', async (req, res) => {
