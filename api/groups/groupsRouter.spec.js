@@ -1,8 +1,9 @@
 const request = require('supertest');
 
 const server = require('../server');
-
 const db = require('../../data/dbConfig');
+
+const { dbReset, group1 } = require('../serverTestReset');
 
 describe('groupsRouter', () => {
 
@@ -12,13 +13,9 @@ describe('groupsRouter', () => {
 
     let res;
     const id = 1;
-    const group1 = {
-        name: 'Group1',
-    };
 
     beforeEach( async () => {
-        await db('groups').truncate();
-        return res = await request(server).post('/api/groups').send(group1);
+        await dbReset();
     })
 
     describe('GET /', () => {
@@ -35,9 +32,9 @@ describe('groupsRouter', () => {
         it('should return list of groups with rquired db schema', () => {
             expect(res.body).toHaveLength;
             expect(res.body[0].id).toBe(1);
-            expect(res.body[0].name).toBeDefined();
-            expect(res.body[0].phoneNumber).toBeDefined();
-            expect(res.body[0].callStatus).toBeDefined();
+            expect(res.body[0].name).toBe(group1.name);
+            expect(res.body[0].phoneNumber).toBe(null);
+            expect(res.body[0].callStatus).toBe(0);
             expect(res.body[0].createdAt).toBeDefined();
         })
 
@@ -79,9 +76,9 @@ describe('groupsRouter', () => {
         it('should return one group with specified ID by params', () => {
             expect(res.body).toBeDefined();
             expect(res.body.id).toBe(id);
-            expect(res.body.name).toBeDefined();
-            expect(res.body.phoneNumber).toBeDefined();
-            expect(res.body.callStatus).toBeDefined();
+            expect(res.body.name).toBe(group1.name);
+            expect(res.body.phoneNumber).toBe(null);
+            expect(res.body.callStatus).toBe(0);
             expect(res.body.createdAt).toBeDefined();
         })
 
@@ -137,7 +134,7 @@ describe('groupsRouter', () => {
             expect(origGroup).not.toBeDefined();
             
             const dbGroups = await db('groups');
-            expect(dbGroups).toEqual([]);    
+            expect(dbGroups).toHaveLength(1);    
         })
 
     });
