@@ -28,12 +28,8 @@ describe('groupModel', () => {
 
     describe('addGroup()', () => {
 
-        beforeEach(async () => {
-            await db('groups').truncate()
-        })
-
         it('should add new group to db', async () => {
-
+            await db('groups').truncate()
             res = await groupModel.addGroup(group1);
             expect(res.id).toBe(id);
             expect(res.name).toBe(group1.name);
@@ -97,13 +93,12 @@ describe('groupModel', () => {
             expect(group).toBeDefined();
 
             res = await groupModel.deleteGroup(id);
-            
+            expect(res).toBe(1);
+
             groups = await db('groups');
             expect(groups).toHaveLength(1);
             group = await db('groups').where({ id }).first();
-            expect(group).toBeUndefined();
-
-            expect(res).toBe(1);
+            expect(group).not.toBeDefined();
 
         });
 

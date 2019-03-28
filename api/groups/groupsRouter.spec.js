@@ -2,7 +2,6 @@ const request = require('supertest');
 
 const server = require('../server');
 const db = require('../../data/dbConfig');
-
 const { dbReset, group1 } = require('../serverTestReset');
 
 describe('groupsRouter', () => {
@@ -118,18 +117,13 @@ describe('groupsRouter', () => {
     });
 
     describe('DELETE /:id', () => {
-        
-        beforeEach( async () => {
-            return res = await request(server).delete(`/api/groups/${id}`)
-        })
-
-        it('should return 200 OK with correct JSON resp', async () => {
+    
+        it('should return 200 OK with correct JSON resp and confirm group deleted', async () => {
+            res = await request(server).delete(`/api/groups/${id}`)
             expect(res.status).toBe(200);
             expect(res.type).toBe('application/json');
             expect(res.body).toEqual({ count: '1 group deleted' });
-        })
 
-        it('confirms user deleted from db', async () => {
             const origGroup = await db('groups').where({ name: group1.name }).first();
             expect(origGroup).not.toBeDefined();
             
