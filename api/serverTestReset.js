@@ -100,6 +100,18 @@ const newInvitee2 = {
     groupId: 1
 };
 
+// *** Group Call Participants Variables *** //
+
+const newParticipant1 = {
+    userId: 1,
+    groupId: 1
+};
+
+const newParticipant2 = {
+    userId: 2,
+    groupId: 1
+};
+
 // *** Function to reset and insert dummay data *** //
 
 const dbReset = async () => {
@@ -123,6 +135,9 @@ const dbReset = async () => {
 
     await db('usersGroupsInvitations').truncate();
     await db('usersGroupsInvitations').insert(newInvitee1);
+
+    await db('usersGroupsParticipants').truncate();
+    await db('usersGroupsParticipants').insert(newParticipant1);
 }
 
 module.exports = {
@@ -142,5 +157,7 @@ module.exports = {
     newMember2,
     newInvitee1,
     newInvitee2,
+    newParticipant1,
+    newParticipant2,
     dbReset
 }

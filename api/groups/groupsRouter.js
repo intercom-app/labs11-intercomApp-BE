@@ -7,6 +7,7 @@ const groupOwnersRouter = require('./groupOwners/groupOwnersRouter');
 const groupInviteesRouter = require('./groupInvitees/groupInviteesRouter');
 const groupActivitiesRouter = require('./groupActivities/groupActivitiesRouter');
 const groupCallStatusRouter = require('./groupCallStatus/groupCallStatusRouter');
+const groupCallParticipants = require('./groupCallParticipants/groupCallParticipantsRouter');
 
 // api/groups
 
@@ -89,5 +90,10 @@ router.use('/:id/callStatus', function(req, res, next) {
     req.groupId = req.params.id;
     next()
 }, groupCallStatusRouter);
+
+router.use('/:id/callParticipants', function(req, res, next) {
+    req.groupId = req.params.id;
+    next()
+}, groupCallParticipants);
 
 module.exports = router;
