@@ -117,11 +117,9 @@ const dbReset = async () => {
 
     await db('usersGroupsOwnership').truncate();
     await db('usersGroupsOwnership').insert(newOwner1);
-    await db('usersGroupsOwnership').insert(newOwner2); 
 
     await db('usersGroupsMembership').truncate();
     await db('usersGroupsMembership').insert(newMember1);
-    await db('usersGroupsMembership').insert(newMember2);
 
     await db('usersGroupsInvitations').truncate();
     await db('usersGroupsInvitations').insert(newInvitee1);
