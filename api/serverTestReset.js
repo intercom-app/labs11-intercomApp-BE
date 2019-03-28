@@ -123,7 +123,6 @@ const dbReset = async () => {
 
     await db('usersGroupsInvitations').truncate();
     await db('usersGroupsInvitations').insert(newInvitee1);
-    await db('usersGroupsInvitations').insert(newInvitee2);
 }
 
 module.exports = {
