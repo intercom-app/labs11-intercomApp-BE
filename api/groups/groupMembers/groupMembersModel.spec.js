@@ -8,6 +8,20 @@ describe('groupMembersModel', () => {
         name: 'Group1',
     };
 
+    const user1 = {
+        firstName: 'Chelsea',
+        lastName: 'Tolnai',
+        displayName: 'CATolnai',
+        email: 'example@test.com'
+    };
+
+    const user2 = {
+        firstName: 'Erinc',
+        lastName: 'Emer',
+        displayName: 'EEmer',
+        email: 'EEmer@test.com'
+    };
+
     const newMember1 = {
         userId: 1,
         groupId: 1
@@ -21,6 +35,11 @@ describe('groupMembersModel', () => {
     beforeEach(async () => {
         await db('groups').truncate();
         await db('groups').insert(group1);
+
+        await db('users').truncate();
+        await db('users').insert(user1);
+        await db('users').insert(user2);
+
         await db('usersGroupsMembership').truncate();
     })
 
