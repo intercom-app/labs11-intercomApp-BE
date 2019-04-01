@@ -1,11 +1,19 @@
 // *** CHECK CORRECT PATH LOCATION
-const db = require('../../../data/dbConfig.js');
+const db = require('../../data/dbConfig.js');
 
 module.exports = {
 
     // function params takes in group phone number
+    getGroup: function(phoneNumber) {
+        return db('groups')
+        .select(
+            'groups.id'
+        )
+        .where({phoneNumber})
+    },
     getGroupMembers: function(phoneNumber) {
         // Searches users groups membership junction table
+        
         return db('usersGroupsMembership')
         // Finds members of group and return group id, user id, and user name
         // You can add more user information if you need by just adding users.<<infoRequired>>
