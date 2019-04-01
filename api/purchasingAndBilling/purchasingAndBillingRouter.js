@@ -10,7 +10,6 @@ router.use(require("body-parser").text());
 
 router.get('/', async (req,res) => {
     res.send('Hello from express router!');
-    console.log(process.env.SK_TEST)
 })
 
 // the FE sends the token to this endpoint

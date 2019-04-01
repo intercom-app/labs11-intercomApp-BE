@@ -228,7 +228,7 @@ router.post('/join', async (request, response) => {
     //Check if caller is on whitelist. If not, end the call (Checks if caller's number is whitelist presently)
     if (request.body.From !== whitelist) {
       twiml.say(`You are not a member of this call. You are calling from ${request.body.From}. Goodbye.`);
-      twiml.reject();
+      /* twiml.reject(); */
     } else { //If caller is on whitelist, start the call.
     // Start with a <Dial> verb
     const dial = twiml.dial();
