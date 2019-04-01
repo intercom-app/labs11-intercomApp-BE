@@ -5,6 +5,7 @@ module.exports = {
     getGroupActivity: function(groupId) {
         return db('activities')
             .select(
+                'activities.id',
                 'activities.activity', 
                 'activities.createdAt', 
                 'users.displayName',
