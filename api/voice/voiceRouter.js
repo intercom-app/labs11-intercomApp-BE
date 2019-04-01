@@ -1,7 +1,7 @@
 require('dotenv');
 const router = require('express').Router();
 const voiceModel = require('./voiceModel');
-const VoiceResponse = require('twilio').twiml.VoiceResponse;
+// const VoiceResponse = require('twilio').twiml.VoiceResponse;
 const urlencoded = require('body-parser').urlencoded;
 const defaultIdentity = 'alice';
 // const AccessToken = require('twilio').jwt.AccessToken;

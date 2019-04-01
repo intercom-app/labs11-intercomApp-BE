@@ -1,6 +1,6 @@
 require('dotenv');
 const router = require('express').Router();
-const stripe = require("stripe")(process.env.SK_TEST);
+// const stripe = require("stripe")(process.env.SK_TEST);
 router.use(require("body-parser").text());
 
 
