@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    
     let groupId = req.groupId;
     let owner = {...req.body, groupId};
     try {
