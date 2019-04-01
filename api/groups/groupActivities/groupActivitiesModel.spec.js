@@ -15,6 +15,7 @@ describe('groupActivitiesModel', () => {
         it('should return list all activities by specified group ID', async () => {
             res = await groupModel.getGroupActivity(1);
             expect(res).toHaveLength;
+            expect(res[0].id).toBeDefined();
             expect(res[0].activity).toBe(activity1.activity);
             expect(res[0].displayName).toBe(user1.displayName);
             expect(res[0].createdAt).toBeDefined();
@@ -29,6 +30,7 @@ describe('groupActivitiesModel', () => {
             await db('activities').truncate();
             res = await groupModel.addGroupActivity(activity1);
             expect(res).toHaveLength(1);
+            expect(res[0].id).toBeDefined();
             expect(res[0].activity).toBe(activity1.activity);
             expect(res[0].displayName).toBe(user1.displayName);
             expect(res[0].createdAt).toBeDefined();
