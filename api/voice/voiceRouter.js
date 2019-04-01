@@ -1,6 +1,7 @@
 require('dotenv');
 const router = require('express').Router();
-// const VoiceResponse = require('twilio').twiml.VoiceResponse;
+const voiceModel = require('./voiceModel');
+const VoiceResponse = require('twilio').twiml.VoiceResponse;
 const urlencoded = require('body-parser').urlencoded;
 const defaultIdentity = 'alice';
 // const AccessToken = require('twilio').jwt.AccessToken;
@@ -173,11 +174,11 @@ function isNumber(to) {
 }
 
 router.get('/', function(request, response) {
-  response.send(welcome());
+  welcome(request, response);
 });
 
 router.post('/', function(request, response) {
-  response.send(welcome());
+  welcome(request, response);
 });
 
 router.get('/accessToken', function(request, response) {
@@ -208,21 +209,30 @@ router.post('/incoming', function(request, response) {
   response.send(incoming());
 });
 
-router.post('/', (request, response) => {
+router.post('/join', async (request, response) => {
     // Use the Twilio Node.js SDK to build an XML response
+    const voiceModel = require('./voiceModel');
     const twiml = new VoiceResponse();
-    const WHITELIST = '+19739013614'
     const groupId = request.body.To;
+    const phoneNumber = request.body.From;
+    /* const whitelist = [] */
+
+    // get phone number from Twilio? or by req.body?
+    try {
+        /* console.log(groupId);
+        const members = await voiceModel.getGroupMembers(getGroup(groupId));
+        console.log(members) */
   /* request.body.To returns the phone number called by the user. This can be used to find the group they're joining.
     request.body.From returns the phone number the user is calling from. This can be used to identify a user. */
 
     //Check if caller is on whitelist. If not, end the call (Checks if caller's number is whitelist presently)
-         if (request.body.From !== WHITELIST) {
+    if (request.body.From !== whitelist) {
       twiml.say(`You are not a member of this call. You are calling from ${request.body.From}. Goodbye.`);
-      twiml.reject();
+      /* twiml.reject(); */
     } else { //If caller is on whitelist, start the call.
     // Start with a <Dial> verb
     const dial = twiml.dial();
+      console.log("joining conference")
       dial.conference('My conference', {
         startConferenceOnEnter: true,
       })};
@@ -230,7 +240,25 @@ router.post('/', (request, response) => {
     // Render the response as XML in reply to the webhook request
     response.type('text/xml');
     response.send(twiml.toString());
+    } catch (err) {
+    response.status(500).json(err);
+  }
   });
+
+router.get('/testnum', async (req, res) => {
+    // get phone number from Twilio? or by req.body?
+    const phoneNumber = req.body.To
+    const gId = {};
+    console.log(phoneNumber);
+    try {
+        const target = await voiceModel.getGroupMembers(phoneNumber);
+        res.status(200).json(target);
+        
+    } catch (err) {
+        res.status(500).json(err);
+    }
+    
+});
 
 exports.tokenGenerator = tokenGenerator;
 exports.makeCall = makeCall;
