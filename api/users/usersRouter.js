@@ -33,8 +33,6 @@ router.post('/', checkUser, async (req, res) => {
         stripeId: stripeCustomerObject.id,
     }
 
-    
-
     try {
         const newUser = await usersModel.addUser(user);
         res.status(201).json(newUser)
