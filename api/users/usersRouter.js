@@ -19,10 +19,11 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', checkUser, async (req, res) => {
-    const stripeCustomerObject = stripe.customers.create({
+    const stripeCustomerObject = await stripe.customers.create({
         email: req.body.email, 
     }).then(customerObject => {
         console.log(customerObject);
+        // res.status(200).json(customerObject) 
     }).catch(err => {
         console.log(err.response);
     });
