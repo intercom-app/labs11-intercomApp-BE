@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const stripe = require('stripe')(process.env.SK_TEST);
 
 const usersModel = require('./usersModel');
 
@@ -18,10 +19,20 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', checkUser, async (req, res) => {
+    const stripeCustomerObject = stripe.customers.create({
+        email: req.body.email, 
+    }).then(customerObject => {
+        console.log(customerObject);
+    }).catch(err => {
+        console.log(err.response);
+    });
+
     const user = {
         displayName: req.body.nickname,
         email: req.body.email,
+        stripeId: stripeCustomerObject.id,
     }
+
     try {
         const newUser = await usersModel.addUser(user);
         res.status(201).json(newUser)

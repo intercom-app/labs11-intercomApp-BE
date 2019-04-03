@@ -44,6 +44,13 @@ exports.up = function(knex, Promise) {
         tbl
             .timestamp('createdAt')
             .defaultTo(knex.fn.now())
+        
+        //user stripeId
+        tbl
+            .string('stripeId', 128)
+            // .notNullable()      // commented out to avoid having to assign unique id to mockUsers seed file
+            // .unique()
+
     })
 };
 
