@@ -31,6 +31,29 @@ router.post('/charge2', async (req, res) => {
     }
 });
 
+
+
+// endpoint for attaching a credit card to a customer
+router.post('/attachSourceToCustomer', async(req,res) => {
+  try{
+    console.log('i got hit')
+    // in the request body, there should be the customer id and the source id
+    const userStripeId = req.body.userStripeId;
+    const sourceId = req.body.sourceId;
+
+    const newlyAttachedSource = await stripe.customers.createSource(userStripeId, {source:sourceId});
+
+    // const newlyAttachedSource = await axios.post(`https://api.stripe.com/v1/customers/${userStripeId}/sources`, sourceId);
+    console.log(newlyAttachedSource);
+    res.status(200).json(newlyAttachedSource);
+    
+
+  } catch{
+    console.log('err: ', err.response);
+  }
+})
+
+
 // endpoint for creating a PaymentIntent
 
 // A PaymentIntent is an object that represents your intent to collect payment from a customer, tracking the lifecycle of the payment process through each stage. When you create a PaymentIntent, specify the amount of money that you wish to collect from the customer, the currency, and the permitted payment methods. 
@@ -45,10 +68,12 @@ router.post('/charge2', async (req, res) => {
 
 router.post('/createPaymentIntent', async(req,res) => {
   try{
-    console.log('req: ', req);
-    const paymentAmount = req.body.paymentAmount;
+    console.log('/createPaymentIntent hit');
+    console.log('req.body: ', req.body );
+    const amountToAddToAccountBalance = req.body.amountToAddToAccountBalance;
+    console.log('amountToAddToAccountBalance: ', amountToAddToAccountBalance)
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: paymentAmount,
+      amount: amountToAddToAccountBalance,
       currency:'usd',
       payment_method_types: ['card']
     });
