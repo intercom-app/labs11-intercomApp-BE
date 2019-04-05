@@ -44,7 +44,7 @@ router.post('/attachSourceToCustomer', async(req,res) => {
     const newlyAttachedSource = await stripe.customers.createSource(userStripeId, {source:sourceId});
 
     // const newlyAttachedSource = await axios.post(`https://api.stripe.com/v1/customers/${userStripeId}/sources`, sourceId);
-    console.log(newlyAttachedSource);
+    console.log('newlyAttachedSource: ', newlyAttachedSource);
     res.status(200).json(newlyAttachedSource);
     
 
@@ -69,7 +69,7 @@ router.post('/attachSourceToCustomer', async(req,res) => {
 router.post('/createPaymentIntent', async(req,res) => {
   try{
     console.log('/createPaymentIntent hit');
-    console.log('req.body: ', req.body );
+    console.log('req.body: ', req.body ); // this returns undefined in the console  
     const amountToAddToAccountBalance = req.body.amountToAddToAccountBalance;
     console.log('amountToAddToAccountBalance: ', amountToAddToAccountBalance)
     const paymentIntent = await stripe.paymentIntents.create({
@@ -80,6 +80,33 @@ router.post('/createPaymentIntent', async(req,res) => {
     console.log('paymentIntent: ',paymentIntent)
     console.log('client_secret: ', paymentIntent.client_secret);
     res.status(200).json({'client_secret':paymentIntent.client_secret});
+  } 
+  catch (err) {
+    console.log('err: ', err.response);
+    res.status(500).json(err.response);
+  }
+});
+
+
+
+router.post('/createCharge', async(req,res) => {
+  try{
+    console.log('/createCharge hit');
+    console.log(req.body)
+    const userStripeId = req.body.userStripeId;
+    const sourceId = req.body.sourceId
+    const amountToAddToAccountBalance = req.body.amountToAddToAccountBalance;
+    console.log('amountToAddToAccountBalance: ', amountToAddToAccountBalance)
+
+    const charge = await stripe.charges.create({
+      amount:amountToAddToAccountBalance,
+      currency: 'usd',
+      customer:userStripeId, 
+      source: sourceId,
+    })
+
+    console.log('charge: ',charge)
+    res.status(200).json({'charge':charge});
   } 
   catch (err) {
     console.log('err: ', err.response);
