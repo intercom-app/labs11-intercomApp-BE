@@ -15,6 +15,18 @@ module.exports = {
 
     },
 
+    getGroupMembersDetailed: function(groupId) {
+
+        return db('usersGroupsMembership')
+            .select(
+                'usersGroupsMembership.createdAt as memberCreatedAt', 
+                'users.*',
+            )
+            .where({ groupId })
+            .join('users', 'usersGroupsMembership.userId', 'users.id')
+
+    },
+
     addGroupMember: async function(member) {
         await db('usersGroupsMembership').insert(member);
         return this.getGroupMembers(member.groupId)
