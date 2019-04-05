@@ -3,6 +3,7 @@ const { getGroupsOwnedDetailed } = require('../userGroupsOwned/userOwnedModel');
 const { getGroupsBelongedDetailed } = require('../userGroupsBelongedTo/userBelongedModel');
 const { getGroupsInvitedDetailed } = require('../userGroupsInvitedTo/userInvitedModel');
 const { getGroupActivityDetailed } = require('../../groups/groupActivities/groupActivitiesModel');
+const { getParticipantsDetailed } = require('../../groups/groupCallParticipants/groupCallParticipantsModel');
 
 module.exports = {
 
@@ -17,6 +18,10 @@ module.exports = {
         groupsBelongedTo = await this.getActivites(groupsBelongedTo);
         groupsInvitedTo = await this.getActivites(groupsInvitedTo);
 
+        groupsOwned = await this.getParticipants(groupsOwned);
+        groupsBelongedTo = await this.getParticipants(groupsBelongedTo);
+        groupsInvitedTo = await this.getParticipants(groupsInvitedTo);
+
         return {
             ...user,
             groupsOwned,
@@ -30,8 +35,15 @@ module.exports = {
             const activities = await getGroupActivityDetailed(group.groupId)
             return ({...group, activities})
         })
-        const results = await Promise.all(promises) 
-        return results
-    }
+        return await Promise.all(promises) 
+    },
+
+    getParticipants: async function (groups) {  
+        const promises = groups.map(async group => {
+            const callParticipants = await getParticipantsDetailed(group.groupId)
+            return ({...group, callParticipants})
+        })
+        return await Promise.all(promises) 
+    },
     
 };
