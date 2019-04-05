@@ -19,7 +19,7 @@ module.exports = {
 
         return db('usersGroupsParticipants')
             .select(
-                'usersGroupsParticipants.createdAt as ParticipantCreatedAt', 
+                'usersGroupsParticipants.createdAt as participantCreatedAt', 
                 'users.*',
             )
             .where({ groupId })

@@ -15,6 +15,18 @@ module.exports = {
 
     },
 
+    getGroupOwnersDetailed: function(groupId) {
+
+        return db('usersGroupsOwnership')
+            .select(
+                'usersGroupsOwnership.createdAt as ownerCreatedAt', 
+                'users.*',
+            )
+            .where({ groupId })
+            .join('users', 'usersGroupsOwnership.userId', 'users.id')
+
+    },
+
     addGroupOwner: async function(owner) {
         await db('usersGroupsOwnership').insert(owner);
         return this.getGroupOwners(owner.groupId)

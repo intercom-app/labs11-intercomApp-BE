@@ -4,6 +4,9 @@ const { getGroupsBelongedDetailed } = require('../userGroupsBelongedTo/userBelon
 const { getGroupsInvitedDetailed } = require('../userGroupsInvitedTo/userInvitedModel');
 const { getGroupActivityDetailed } = require('../../groups/groupActivities/groupActivitiesModel');
 const { getParticipantsDetailed } = require('../../groups/groupCallParticipants/groupCallParticipantsModel');
+const { getGroupOwnersDetailed } = require('../../groups/groupOwners/groupOwnersModel');
+const { getGroupMembersDetailed } = require('../../groups/groupMembers/groupMembersModel');
+const { getGroupInviteesDetailed } = require('../../groups/groupInvitees/groupInviteesModel');
 
 module.exports = {
 
@@ -21,6 +24,18 @@ module.exports = {
         groupsOwned = await this.getParticipants(groupsOwned);
         groupsBelongedTo = await this.getParticipants(groupsBelongedTo);
         groupsInvitedTo = await this.getParticipants(groupsInvitedTo);
+
+        groupsOwned = await this.getOwners(groupsOwned);
+        groupsBelongedTo = await this.getOwners(groupsBelongedTo);
+        groupsInvitedTo = await this.getOwners(groupsInvitedTo);
+
+        groupsOwned = await this.getMembers(groupsOwned);
+        groupsBelongedTo = await this.getMembers(groupsBelongedTo);
+        groupsInvitedTo = await this.getMembers(groupsInvitedTo);
+
+        groupsOwned = await this.getInvitees(groupsOwned);
+        groupsBelongedTo = await this.getInvitees(groupsBelongedTo);
+        groupsInvitedTo = await this.getInvitees(groupsInvitedTo);
 
         return {
             ...user,
@@ -45,5 +60,28 @@ module.exports = {
         })
         return await Promise.all(promises) 
     },
-    
+  
+    getOwners: async function (groups) {  
+        const promises = groups.map(async group => {
+            const owners = await getGroupOwnersDetailed(group.groupId)
+            return ({...group, owners})
+        })
+        return await Promise.all(promises) 
+    },  
+      
+    getMembers: async function (groups) {  
+        const promises = groups.map(async group => {
+            const members = await getGroupMembersDetailed(group.groupId)
+            return ({...group, members})
+        })
+        return await Promise.all(promises) 
+    },  
+ 
+    getInvitees: async function (groups) {  
+        const promises = groups.map(async group => {
+            const invitees = await getGroupInviteesDetailed(group.groupId)
+            return ({...group, invitees})
+        })
+        return await Promise.all(promises) 
+    },  
 };
