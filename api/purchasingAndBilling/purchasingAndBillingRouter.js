@@ -36,20 +36,22 @@ router.post('/charge2', async (req, res) => {
 // endpoint for attaching a credit card to a customer
 router.post('/attachSourceToCustomer', async(req,res) => {
   try{
-    console.log('i got hit')
+    console.log('/attachSourceToCustomer got hit')
     // in the request body, there should be the customer id and the source id
     const userStripeId = req.body.userStripeId;
+    console.log('userStripeId',userStripeId);
     const sourceId = req.body.sourceId;
+    console.log('sourceId', sourceId);
 
     const newlyAttachedSource = await stripe.customers.createSource(userStripeId, {source:sourceId});
-
     // const newlyAttachedSource = await axios.post(`https://api.stripe.com/v1/customers/${userStripeId}/sources`, sourceId);
     console.log('newlyAttachedSource: ', newlyAttachedSource);
     res.status(200).json(newlyAttachedSource);
     
 
-  } catch{
-    console.log('err: ', err.response);
+  } catch (err) {
+    console.log('err: ', err);
+    res.status(500).json(err);
   }
 })
 
@@ -92,7 +94,7 @@ router.post('/createPaymentIntent', async(req,res) => {
 router.post('/createCharge', async(req,res) => {
   try{
     console.log('/createCharge hit');
-    console.log(req.body)
+    console.log('req.body: ', req.body)
     const userStripeId = req.body.userStripeId;
     const sourceId = req.body.sourceId
     const amountToAddToAccountBalance = req.body.amountToAddToAccountBalance;
@@ -101,11 +103,11 @@ router.post('/createCharge', async(req,res) => {
     const charge = await stripe.charges.create({
       amount:amountToAddToAccountBalance,
       currency: 'usd',
-      customer:userStripeId, 
-      source: sourceId,
-    })
+      customer: userStripeId, 
+      source: sourceId
+    });
 
-    console.log('charge: ',charge)
+    console.log('charge: ',charge);
     res.status(200).json({'charge':charge});
   } 
   catch (err) {
