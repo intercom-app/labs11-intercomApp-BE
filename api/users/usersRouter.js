@@ -23,6 +23,7 @@ router.post('/', checkUser, async (req, res) => {
     const user = {
         displayName: req.body.nickname,
         email: req.body.email,
+        avatar: req.body.picture
     }
 
     try {
