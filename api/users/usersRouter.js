@@ -1,7 +1,9 @@
 const router = require('express').Router();
+const stripe = require('stripe')(process.env.SK_TEST);
 
 const usersModel = require('./usersModel');
 
+const userDetailedRouter = require('./userDetailed/userDetailedRouter');
 const userBelongedRouter = require('./userGroupsBelongedTo/userBelongedRouter');
 const userIvitedRouter = require('./userGroupsInvitedTo/userInvitedRouter');
 const userOwnedRouter = require('./userGroupsOwned/userOwnedRouter');
@@ -22,7 +24,12 @@ router.post('/', checkUser, async (req, res) => {
         displayName: req.body.nickname,
         email: req.body.email,
     }
+
     try {
+        const stripeCustomerObject = await stripe.customers.create({
+            email:req.body.email,
+        });
+        user.stripeId = stripeCustomerObject.id;
         const newUser = await usersModel.addUser(user);
         res.status(201).json(newUser)
     } catch (err) {
@@ -79,7 +86,12 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-// api/groups/:id/<subroutes>
+// api/users/:id/<subroutes>
+
+router.use('/:id/detailed', function(req, res, next) {
+    req.userId = req.params.id;
+    next()
+}, userDetailedRouter);
 
 router.use('/:id/groupsBelongedTo', function(req, res, next) {
     req.userId = req.params.id;
