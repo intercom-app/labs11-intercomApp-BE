@@ -41,4 +41,4 @@ const deleteCustomers = async(numberToDelete) => {
     }
 }
 
-// deleteCustomers(17)
+deleteCustomers(17)
