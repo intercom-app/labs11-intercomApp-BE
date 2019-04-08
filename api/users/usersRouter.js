@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const stripe = require('stripe')(process.env.SK_TEST);
-
+const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 const usersModel = require('./usersModel');
 
 const userDetailedRouter = require('./userDetailed/userDetailedRouter');
@@ -30,7 +30,10 @@ router.post('/', checkUser, async (req, res) => {
         const stripeCustomerObject = await stripe.customers.create({
             email:req.body.email,
         });
-        user.stripeId = stripeCustomerObject.id;
+        const twilioSubSID = await client.api.accounts.create({
+          friendlyName: req.body.email});
+        user.stripeId = await stripeCustomerObject.id;
+        user.twilioSubSID = await twilioSubSID.sid;
         const newUser = await usersModel.addUser(user);
         res.status(201).json(newUser)
     } catch (err) {
