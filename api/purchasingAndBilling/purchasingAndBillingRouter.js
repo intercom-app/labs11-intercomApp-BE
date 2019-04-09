@@ -65,12 +65,10 @@ router.post('/updateDefaultSource', async(req,res) => {
     console.log('userStripeId',userStripeId);
     const sourceId = req.body.sourceId;
     console.log('sourceId', sourceId);
-
-    const newlyUpdatedSource = await stripe.customers.update(userStripeId, {default_source:sourceId});
+    
+    const newlyUpdatedSource = await stripe.customers.update(userStripeId, {source:sourceId});
     console.log('newlyUpdatedSource: ', newlyUpdatedSource);
     res.status(200).json(newlyUpdatedSource);
-    
-
   } catch (err) {
     console.log('err: ', err);
     res.status(500).json(err);
@@ -138,16 +136,17 @@ router.post('/createCharge', async(req,res) => {
   }
 });
 
-// endpoint for gettting the user's  Stripe customer object id
-router.post('/retrieveCustomerStripeInfo', async(req,res) => {
+// endpoint for gettting the user's default payment source
+router.post('/retrieveCustomerDefaultSource', async(req,res) => {
   try{
-    console.log('/retrieveCustomerStripeInfo hit');
+    console.log('/retrieveCustomerDefaultSource hit');
     console.log('req.body: ', req.body)
     const userStripeId = req.body.userStripeId;
 
     const customer = await stripe.customers.retrieve(userStripeId);
 
     const defaultSourceId = customer.default_source;
+    console.log('defaultSourceId: ', defaultSourceId)
 
     res.status(200).json({'defaultSourceId':defaultSourceId});
   } 
