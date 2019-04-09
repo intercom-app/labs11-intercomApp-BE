@@ -26,3 +26,4 @@ module.exports = {
         return db('groups').where({ id }).del();
     },
 };
+

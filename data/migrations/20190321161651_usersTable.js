@@ -24,7 +24,11 @@ exports.up = function(knex, Promise) {
         //user last name
         tbl
             .string('lastName', 128)
-        
+        //user avatar
+        tbl
+            .string('avatar', 256)
+            .defaultTo(null)
+            
         //user display name
         tbl
             .string('displayName', 128)
