@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const stripe = require('stripe')(process.env.SK_TEST);
-const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
+//const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 const usersModel = require('./usersModel');
 
 const userDetailedRouter = require('./userDetailed/userDetailedRouter');
@@ -30,10 +30,10 @@ router.post('/', checkUser, async (req, res) => {
         const stripeCustomerObject = await stripe.customers.create({
             email:req.body.email,
         });
-        const twilioSubSID = await client.api.accounts.create({
-          friendlyName: req.body.email});
+        //const twilioSubSID = await client.api.accounts.create({
+          //friendlyName: req.body.email});
         user.stripeId = await stripeCustomerObject.id;
-        user.twilioSubSID = await twilioSubSID.sid;
+        //user.twilioSubSID = await twilioSubSID.sid;
         const newUser = await usersModel.addUser(user);
         res.status(201).json(newUser)
     } catch (err) {
@@ -89,6 +89,32 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+
+router.get('/:id/accountBalance', async(req,res) => {
+    const id = req.params.id; 
+    try {
+        const accountBalance = await usersModel.getUserAccountBalance(id);
+        res.status(200).json(accountBalance);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+router.put('/:id/accountBalance', async(req,res) => {
+    const id = req.params.id; 
+    const changes = req.body;
+    try {
+        await usersModel.updateUser(id, {...req.body});
+        const updatedUser = await usersModel.getUserById(id);
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+
+
 
 // api/users/:id/<subroutes>
 

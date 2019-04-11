@@ -56,6 +56,11 @@ exports.up = function(knex, Promise) {
             .defaultTo('free')
             .notNullable();
         
+        //user account balance
+        tbl
+            .integer('accountBalance')
+            .defaultTo(100)
+        
         //createdAt
         tbl
             .timestamp('createdAt')

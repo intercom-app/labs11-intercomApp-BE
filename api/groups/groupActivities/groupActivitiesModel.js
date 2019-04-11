@@ -8,7 +8,9 @@ module.exports = {
                 'activities.id',
                 'activities.activity', 
                 'activities.createdAt', 
+                'activities.userId',
                 'users.displayName',
+                'users.avatar'
             )
             .where({ groupId })
             .orderBy('activities.createdAt','DESC')
