@@ -8,8 +8,8 @@ module.exports = {
                 'activities.id',
                 'activities.activity', 
                 'activities.createdAt', 
+                'activities.userId',
                 'users.displayName',
-                'users.id as userId',
                 'users.avatar'
             )
             .where({ groupId })

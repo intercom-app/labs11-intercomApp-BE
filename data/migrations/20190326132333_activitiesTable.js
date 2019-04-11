@@ -10,6 +10,7 @@ exports.up = function(knex, Promise) {
             .notNullable()
             .references('id')
             .inTable('groups')
+            .onUpdate('CASCADE')
             .onDelete('CASCADE');
         
         //foreign key: userId
@@ -18,6 +19,8 @@ exports.up = function(knex, Promise) {
             .notNullable()
             .references('id')
             .inTable('users')
+            .onUpdate('CASCADE')
+            .onDelete('RESTRICT');
         
         //activity
         tbl
