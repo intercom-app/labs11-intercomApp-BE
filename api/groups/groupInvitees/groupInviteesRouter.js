@@ -14,6 +14,16 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/detailed', async (req, res) => {
+    let id = req.groupId;
+    try {
+        const members = await groupsModel.getGroupInviteesDetailed(id);
+        res.status(200).json(members);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 router.post('/', async (req, res) => {
     let groupId = req.groupId;
     let invitee = {...req.body, groupId};
