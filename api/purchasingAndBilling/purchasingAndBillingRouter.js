@@ -2,6 +2,7 @@ require('dotenv');
 const router = require('express').Router();
 // const stripe = require("stripe")(process.env.SK_TEST);
 router.use(require("body-parser").text());
+const stripe = require("stripe")(process.env.SK_TEST);
 
 
 
@@ -114,14 +115,14 @@ router.post('/createPaymentIntent', async(req,res) => {
 router.post('/createCharge', async(req,res) => {
   try{
     console.log('/createCharge hit');
-    console.log('req.body: ', req.body)
+    console.log('req.body: ', req.body);
     const userStripeId = req.body.userStripeId;
-    const sourceId = req.body.sourceId
-    const amountToAddToAccountBalance = req.body.amountToAddToAccountBalance;
-    console.log('amountToAddToAccountBalance: ', amountToAddToAccountBalance)
+    const sourceId = req.body.sourceId;
+    const amountToAdd = req.body.amountToAdd;
+    console.log('amountToAdd: ', amountToAdd);
 
     const charge = await stripe.charges.create({
-      amount:amountToAddToAccountBalance,
+      amount:amountToAdd,
       currency: 'usd',
       customer: userStripeId, 
       source: sourceId
@@ -131,8 +132,8 @@ router.post('/createCharge', async(req,res) => {
     res.status(200).json({'charge':charge});
   } 
   catch (err) {
-    console.log('err: ', err.response);
-    res.status(500).json(err.response);
+    console.log('err: ', err);
+    res.status(500).json(err);
   }
 });
 
@@ -144,15 +145,15 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
     const userStripeId = req.body.userStripeId;
 
     const customer = await stripe.customers.retrieve(userStripeId);
-
+    console.log('customer: ',customer);
     const defaultSourceId = customer.default_source;
     console.log('defaultSourceId: ', defaultSourceId)
 
     res.status(200).json({'defaultSourceId':defaultSourceId});
   } 
   catch (err) {
-    console.log('err: ', err.response);
-    res.status(500).json(err.response);
+    console.log('err: ', err);
+    res.status(500).json(err);
   }
 });
 

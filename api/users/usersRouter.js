@@ -90,6 +90,32 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+
+router.get('/:id/accountBalance', async(req,res) => {
+    const id = req.params.id; 
+    try {
+        const accountBalance = await usersModel.getUserAccountBalance(id);
+        res.status(200).json(accountBalance);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+router.put('/:id/accountBalance', async(req,res) => {
+    const id = req.params.id; 
+    const changes = req.body;
+    try {
+        await usersModel.updateUser(id, {...req.body});
+        const updatedUser = await usersModel.getUserById(id);
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+
+
+
 // api/users/:id/<subroutes>
 
 router.use('/:id/detailed', function(req, res, next) {

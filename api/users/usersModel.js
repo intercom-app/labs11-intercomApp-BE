@@ -18,6 +18,10 @@ module.exports = {
         return this.getUserById(id)
     },
 
+    getUserAccountBalance: function(id) {
+        return db('users').where({id:id}).first().select('accountBalance')
+    },
+
     updateUser: function(id, changes) {
         return db('users')
             .where({ id })
