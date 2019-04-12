@@ -22,6 +22,10 @@ module.exports = {
         return db('users').where({id:id}).first().select('accountBalance')
     },
 
+    getLast4: function(id) {
+        return db('users').where({id:id}).first().select('last4')
+    },
+
     updateUser: function(id, changes) {
         return db('users')
             .where({ id })

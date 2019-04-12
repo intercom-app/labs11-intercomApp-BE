@@ -56,6 +56,11 @@ exports.up = function(knex, Promise) {
             .integer('accountBalance')
             .defaultTo(100)
         
+        //user last 4 credit card digits
+        tbl
+            .integer('last4')
+            .defaultTo(null)
+        
         //createdAt
         tbl
             .timestamp('createdAt')
