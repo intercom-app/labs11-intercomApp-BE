@@ -25,12 +25,10 @@ exports.up = function(knex, Promise) {
         //callSession start time/date (in Unix Time)
         tbl
             .integer('startTime') 
-            .notNullable()
         
         //callSession end time/date (in Unix Time)
         tbl
             .integer('endTime')
-            .notNullable()
              
             
         //callSession duration (in seconds)
@@ -40,6 +38,10 @@ exports.up = function(knex, Promise) {
         //callSession number of participants
         tbl
             .integer('numOfParticipants')
+        
+        //callSession cost
+        tbl
+            .integer('cost')
         
         //createdAt
         tbl
