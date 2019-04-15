@@ -33,8 +33,11 @@ module.exports = {
             .then(count => (count > 0 ? this.getUserById(id) : null));
     },
     
-    deleteUser: function(id) {
-        return db('users').where({ id }).del();
+    deleteUser: async function(id) {
+        const activitiesDeleted = await db('activities').where('userId', '=', `${id}` ).del()
+        if(activitiesDeleted >= 0) {
+            return db('users').where({ id }).del()
+        }
     },
 
 };
