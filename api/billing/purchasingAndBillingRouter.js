@@ -3,6 +3,7 @@ const router = require('express').Router();
 // const stripe = require("stripe")(process.env.SK_TEST);
 router.use(require("body-parser").text());
 const stripe = require("stripe")(process.env.SK_TEST);
+// const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
 
 
@@ -156,6 +157,76 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
     res.status(500).json(err);
   }
 });
+
+
+
+router.post('/groupCosts', async(req,res) => {
+  try{
+    console.log('/groupCosts  hit');
+    const groupId = req.body.groupId;
+    let groupCostsList = [];
+    const groupCosts = await client.calls.list();
+
+    for (let i = 0; i < groupCosts.length; i++) {
+        if (groupCosts[i].from_formatted === groupId) {
+            groupCostsList.push(groupCosts[i].price)
+        }
+    }
+
+    let totalCost = 0;
+    for (let i = 0; i < groupCostsList.length;i++) {
+      totalCost += groupCostsList[i];
+    }
+
+    res.status(200).json({'totalcost':totalCost});
+
+  } catch(err) {
+    console.log(err)
+  }
+})
+
+
+
+
+// const callSessions = async(groupId) => {
+//     try{
+//         // const res = await axios.get(`https://api.twilio.com/2010-04-01/Accounts/${process.env.ACCOUNT_SID}/Calls.json`);
+//         // console.log(res)
+
+//         // const callSessions = await client.calls.list();
+
+//         let callSessionsPriceList = []
+
+//         // const callSessions = await client.calls.each({from_formatted:`${groupId}`},
+//         //     calls => {
+//         //         console.log(calls.price);
+//         //         callSessionsList.push(calls.price)
+//         // });
+
+
+
+//         // let callSessionsContainer =[];
+//         // console.log('callSessionsList: ', callSessionsList)
+
+//         const callSessions = await client.calls.list();
+//         // console.log('callSessions:', callSessions)
+//         for (let i = 0; i < callSessions.length; i++) {
+//             if (callSessions[i].from_formatted === groupId) {
+//                 callSessionsPriceList.push(callSessions[i].price)
+//             }
+//         }
+//         console.log('callSessionsPriceList: ', callSessionsPriceList)
+//         // return callSessionsList
+
+        
+        
+//     }
+//     catch(err) {
+//         console.log(err)
+//     }
+// }
+
+// callSessions();
 
 
 

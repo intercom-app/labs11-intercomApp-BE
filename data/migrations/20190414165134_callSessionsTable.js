@@ -1,13 +1,21 @@
 
+
+fromFormatted
+
+
+
 exports.up = function(knex, Promise) {
     return knex.schema.createTable('callSessions', function(tbl) {
         // id (primary key)
         tbl.increments(); // creates an id (if you don't pass anything here the default name of the column will be 'id'), makes it integer, makes it autoincrement
         
+        // sid 
+        tbl.integer('sid')
+
         //foreign key: user id
         tbl
             .integer('userId')
-            .notNullable()
+            // .notNullable()
             .references('id')
             .inTable('users')
             // .onUpdate('CASCADE')
@@ -16,32 +24,28 @@ exports.up = function(knex, Promise) {
         // foreign key: group id
         tbl
             .integer('groupId')
-            .notNullable()
+            // .notNullable()
             .references('id')
             .inTable('groups')
             // .onUpdate('CASCADE')
             // .onDelete('CASCADE');
         
-        //callSession start time/date (in Unix Time)
+        //callSession start time/date 
         tbl
-            .integer('startTime') 
+            .string('startTime') 
         
-        //callSession end time/date (in Unix Time)
+        //callSession end time/date  
         tbl
-            .integer('endTime')
+            .string('endTime')
              
             
-        //callSession duration (in seconds)
+        //callSession duration (in minutes)
         tbl
             .integer('duration')
-        
-        //callSession number of participants
+               
+        //callSession price (dollars)
         tbl
-            .integer('numOfParticipants')
-        
-        //callSession cost
-        tbl
-            .integer('cost')
+            .float('price')
         
         //createdAt
         tbl
