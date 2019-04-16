@@ -1,8 +1,5 @@
 
 
-fromFormatted
-
-
 
 exports.up = function(knex, Promise) {
     return knex.schema.createTable('callSessions', function(tbl) {
