@@ -187,7 +187,30 @@ router.post('/groupTwilioCharges', async(req,res) => {
     console.log(err)
     res.status(500).json(err);
   }
-})
+});
+
+
+// All of a user's stripe charges 
+
+router.post('/userStripeCharges', async(req,res) => {
+  try {
+      const stripeId = req.body.stripeId;
+      const allCharges = await stripe.charges.list();
+      console.log('allCharges: ', allCharges)
+
+      // const allCustomerCharges = allCharges.filter(charge => charge.customer === stripeId)
+
+      const allCustomerCharges = allCharges.data.filter(charge => charge.customer === stripeId);
+      console.log('allCustomerCharges: ', allCustomerCharges)
+      res.status(200).json({'allCustomerCharges':allCustomerCharges});
+  } catch(err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
+
+
+
 
 
 
