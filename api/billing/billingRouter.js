@@ -3,7 +3,7 @@ const router = require('express').Router();
 // const stripe = require("stripe")(process.env.SK_TEST);
 router.use(require("body-parser").text());
 const stripe = require("stripe")(process.env.SK_TEST);
-// const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
+const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
 
 
