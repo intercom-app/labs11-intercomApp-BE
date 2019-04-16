@@ -167,6 +167,8 @@ router.post('/groupTwilioCharges', async(req,res) => {
     let groupTwilioCharges = [];
     const allTwilioChargesRes = await client.calls.list();
 
+    console.log('allTwilioChargesRes: ',  allTwilioChargesRes);
+
     for (let i = 0; i < allTwilioChargesRes.length; i++) {
         if (allTwilioChargesRes[i].from_formatted === groupId) {
           groupTwilioCharges.push(allTwilioChargesRes[i].price)
@@ -200,9 +202,9 @@ router.post('/userStripeCharges', async(req,res) => {
 
       // const allCustomerCharges = allCharges.filter(charge => charge.customer === stripeId)
 
-      const allCustomerCharges = allCharges.data.filter(charge => charge.customer === stripeId);
-      console.log('allCustomerCharges: ', allCustomerCharges)
-      res.status(200).json({'allCustomerCharges':allCustomerCharges});
+      const userStripeCharges = allCharges.data.filter(charge => charge.customer === stripeId);
+      console.log('userStripeCharges: ', userStripeCharges)
+      res.status(200).json({'userStripeCharges':userStripeCharges});
   } catch(err) {
     console.log(err);
     res.status(500).json(err);
