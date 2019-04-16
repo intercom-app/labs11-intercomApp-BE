@@ -160,25 +160,25 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
 
 
 
-router.post('/groupCosts', async(req,res) => {
+router.post('/groupTwilioCharges', async(req,res) => {
   try{
-    console.log('/groupCosts  hit');
+    console.log('/groupTwilioCharges hit');
     const groupId = req.body.groupId;
-    let groupCostsList = [];
-    const groupCosts = await client.calls.list();
+    let groupTwilioCharges = [];
+    const groupTwilioChargesRes = await client.calls.list();
 
-    for (let i = 0; i < groupCosts.length; i++) {
-        if (groupCosts[i].from_formatted === groupId) {
-            groupCostsList.push(groupCosts[i].price)
+    for (let i = 0; i < groupTwilioChargesRes.length; i++) {
+        if (groupTwilioChargesRes[i].from_formatted === groupId) {
+          groupTwilioCharges.push(groupTwilioChargesRes[i].price)
         }
     }
 
-    let totalCost = 0;
-    for (let i = 0; i < groupCostsList.length;i++) {
-      totalCost += groupCostsList[i];
+    let sumOfGroupTwilioCharges = 0;
+    for (let i = 0; i < groupTwilioCharges.length;i++) {
+      sumOfGroupTwilioCharges += groupTwilioCharges[i];
     }
 
-    res.status(200).json({'totalcost':totalCost});
+    res.status(200).json({'sumOfGroupTwilioCharges':sumOfGroupTwilioCharges});
 
   } catch(err) {
     console.log(err)
