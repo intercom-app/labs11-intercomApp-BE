@@ -202,9 +202,24 @@ router.post('/userStripeCharges', async(req,res) => {
 
       // const allCustomerCharges = allCharges.filter(charge => charge.customer === stripeId)
 
-      const userStripeCharges = allCharges.data.filter(charge => charge.customer === stripeId);
-      console.log('userStripeCharges: ', userStripeCharges)
-      res.status(200).json({'userStripeCharges':userStripeCharges});
+      let userStripeChargesArr = allCharges.data.filter(charge => charge.customer === stripeId);
+      
+      userStripeChargesArr = userStripeChargesArr.map(chargeObj => {
+        return chargeObj.amount
+      })
+
+      // console.log('userStripeChargesArr: ', userStripeChargesArr);
+
+      let sumOfUserStripeCharges = 0;
+      // console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges)
+      for (let i = 0; i < userStripeChargesArr.length;i++) {
+        sumOfUserStripeCharges += userStripeChargesArr[i];
+      }
+      console.log('sumOfUserStripeCharges: ', sumOfUserStripeCharges)
+      // sumOfUserStripeCharges = Math.round((sumOfUserStripeCharges/100))/100; // converting from cents to dollars
+      // console.log('sumOfUserStripeCharges: ', sumOfUserStripeCharges)
+
+      res.status(200).json({'sumOfUserStripeCharges':sumOfUserStripeCharges});
   } catch(err) {
     console.log(err);
     res.status(500).json(err);
