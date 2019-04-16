@@ -3,6 +3,7 @@ const router = require('express').Router();
 // const stripe = require("stripe")(process.env.SK_TEST);
 router.use(require("body-parser").text());
 const stripe = require("stripe")(process.env.SK_TEST);
+const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
 
 
@@ -156,6 +157,103 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
     res.status(500).json(err);
   }
 });
+
+
+
+router.post('/groupTwilioCharges', async(req,res) => {
+  try{
+    console.log('/groupTwilioCharges hit');
+    const groupId = req.body.groupId;
+    let groupTwilioCharges = [];
+    const allTwilioChargesRes = await client.calls.list();
+
+    for (let i = 0; i < allTwilioChargesRes.length; i++) {
+        if (allTwilioChargesRes[i].from_formatted === groupId) {
+          groupTwilioCharges.push(allTwilioChargesRes[i].price)
+        }
+    }
+    // console.log('groupTwilioCharges: ', groupTwilioCharges)
+
+    let sumOfGroupTwilioCharges = 0;
+
+    // console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges)
+    for (let i = 0; i < groupTwilioCharges.length;i++) {
+      sumOfGroupTwilioCharges += groupTwilioCharges[i];
+    }
+    console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges)
+
+    res.status(200).json({'sumOfGroupTwilioCharges':sumOfGroupTwilioCharges});
+  } catch(err) {
+    console.log(err)
+    res.status(500).json(err);
+  }
+});
+
+
+// All of a user's stripe charges 
+
+router.post('/userStripeCharges', async(req,res) => {
+  try {
+      const stripeId = req.body.stripeId;
+      const allCharges = await stripe.charges.list();
+      console.log('allCharges: ', allCharges)
+
+      // const allCustomerCharges = allCharges.filter(charge => charge.customer === stripeId)
+
+      const allCustomerCharges = allCharges.data.filter(charge => charge.customer === stripeId);
+      console.log('allCustomerCharges: ', allCustomerCharges)
+      res.status(200).json({'allCustomerCharges':allCustomerCharges});
+  } catch(err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
+
+
+
+
+
+
+
+// const callSessions = async(groupId) => {
+//     try{
+//         // const res = await axios.get(`https://api.twilio.com/2010-04-01/Accounts/${process.env.ACCOUNT_SID}/Calls.json`);
+//         // console.log(res)
+
+//         // const callSessions = await client.calls.list();
+
+//         let callSessionsPriceList = []
+
+//         // const callSessions = await client.calls.each({from_formatted:`${groupId}`},
+//         //     calls => {
+//         //         console.log(calls.price);
+//         //         callSessionsList.push(calls.price)
+//         // });
+
+
+
+//         // let callSessionsContainer =[];
+//         // console.log('callSessionsList: ', callSessionsList)
+
+//         const callSessions = await client.calls.list();
+//         // console.log('callSessions:', callSessions)
+//         for (let i = 0; i < callSessions.length; i++) {
+//             if (callSessions[i].from_formatted === groupId) {
+//                 callSessionsPriceList.push(callSessions[i].price)
+//             }
+//         }
+//         console.log('callSessionsPriceList: ', callSessionsPriceList)
+//         // return callSessionsList
+
+        
+        
+//     }
+//     catch(err) {
+//         console.log(err)
+//     }
+// }
+
+// callSessions();
 
 
 
