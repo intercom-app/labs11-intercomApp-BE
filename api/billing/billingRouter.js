@@ -165,20 +165,20 @@ router.post('/groupTwilioCharges', async(req,res) => {
     console.log('/groupTwilioCharges hit');
     const groupId = req.body.groupId;
     let groupTwilioCharges = [];
-    const groupTwilioChargesRes = await client.calls.list();
+    const allTwilioChargesRes = await client.calls.list();
 
-    for (let i = 0; i < groupTwilioChargesRes.length; i++) {
-        if (groupTwilioChargesRes[i].from_formatted === groupId) {
-          groupTwilioCharges.push(groupTwilioChargesRes[i].price)
+    for (let i = 0; i < allTwilioChargesRes.length; i++) {
+        if (allTwilioChargesRes[i].from_formatted === groupId) {
+          groupTwilioCharges.push(allTwilioChargesRes[i].price)
         }
     }
 
-    let sumOfGroupTwilioCharges = 0;
-    for (let i = 0; i < groupTwilioCharges.length;i++) {
-      sumOfGroupTwilioCharges += groupTwilioCharges[i];
-    }
+    // let sumOfGroupTwilioCharges = 0;
+    // for (let i = 0; i < groupTwilioCharges.length;i++) {
+    //   sumOfGroupTwilioCharges += groupTwilioCharges[i];
+    // }
 
-    res.status(200).json({'sumOfGroupTwilioCharges':sumOfGroupTwilioCharges});
+    res.status(200).json({'groupTwilioCharges':groupTwilioCharges});
   } catch(err) {
     console.log(err)
     res.status(500).json(err);
