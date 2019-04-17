@@ -113,6 +113,27 @@ router.put('/:id/accountBalance', async(req,res) => {
     }
 })
 
+router.get('/:id/last4', async(req,res) => {
+    const id = req.params.id; 
+    try {
+        const last4 = await usersModel.getLast4(id);
+        res.status(200).json(last4);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+router.put('/:id/last4', async(req,res) => {
+    const id = req.params.id; 
+    const changes = req.body;
+    try {
+        await usersModel.updateUser(id, {...req.body});
+        const updatedUser = await usersModel.getUserById(id);
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
 
 
 

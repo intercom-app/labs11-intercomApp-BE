@@ -11,11 +11,6 @@ exports.up = function(knex, Promise) {
         .defaultTo(null)
         // .notNullable()      // commented out to avoid having to assign unique id to mockUsers seed file
         // .unique()
-        
-        //user twilioSubSID
-        tbl
-        .string('twilioSubSID', 128)
-        .defaultTo(null)
 
         //user first name
         tbl
@@ -60,6 +55,11 @@ exports.up = function(knex, Promise) {
         tbl
             .integer('accountBalance')
             .defaultTo(100)
+        
+        //user last 4 credit card digits
+        tbl
+            .integer('last4')
+            .defaultTo(null)
         
         //createdAt
         tbl

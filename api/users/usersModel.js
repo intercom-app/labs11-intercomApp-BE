@@ -22,6 +22,10 @@ module.exports = {
         return db('users').where({id:id}).first().select('accountBalance')
     },
 
+    getLast4: function(id) {
+        return db('users').where({id:id}).first().select('last4')
+    },
+
     updateUser: function(id, changes) {
         return db('users')
             .where({ id })
@@ -29,8 +33,11 @@ module.exports = {
             .then(count => (count > 0 ? this.getUserById(id) : null));
     },
     
-    deleteUser: function(id) {
-        return db('users').where({ id }).del();
+    deleteUser: async function(id) {
+        const activitiesDeleted = await db('activities').where('userId', '=', `${id}` ).del()
+        if(activitiesDeleted >= 0) {
+            return db('users').where({ id }).del()
+        }
     },
 
 };

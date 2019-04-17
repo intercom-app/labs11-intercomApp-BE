@@ -41,4 +41,18 @@ const deleteCustomers = async(numberToDelete) => {
     }
 }
 
-deleteCustomers(17)
+
+// All stripe charges 
+
+const getAllCharges = async() => {
+    let allChargesArr = [];
+    try{
+        const allCharges = await stripe.charges.list({limit:3});
+        console.log('allCharges: ', allCharges)
+        return allCharges
+    } catch(err) {
+        console.log(err)
+    }
+}
+
+getAllCharges();
