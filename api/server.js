@@ -13,7 +13,7 @@ const billingRouter = require('./billing/billingRouter');
 const db = require('../data/dbConfig.js');
 const server = express();
 
-server.use(cors(corsOptions));
+server.use(cors());
 server.use(express.json());
 
 server.use('/api/team', teamRouter);
