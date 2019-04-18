@@ -166,25 +166,51 @@ router.post('/groupTwilioCharges', async(req,res) => {
     const groupId = req.body.groupId;
     let groupTwilioCharges = [];
     const allTwilioChargesRes = await client.calls.list();
+    // console.log('allTwilioChargesRes: ', allTwilioChargesRes)
 
-    console.log('allTwilioChargesRes: ',  allTwilioChargesRes);
+    console.log('groupId: ',  groupId);
+    // console.log('allTwilioChargesRes: ',  allTwilioChargesRes);
 
     for (let i = 0; i < allTwilioChargesRes.length; i++) {
-        if (allTwilioChargesRes[i].from_formatted === groupId) {
+        if (allTwilioChargesRes[i].fromFormatted === groupId) {
           groupTwilioCharges.push(allTwilioChargesRes[i].price)
         }
     }
     // console.log('groupTwilioCharges: ', groupTwilioCharges)
 
     let sumOfGroupTwilioCharges = 0;
-
-    // console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges)
     for (let i = 0; i < groupTwilioCharges.length;i++) {
       sumOfGroupTwilioCharges += groupTwilioCharges[i];
     }
     console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges)
 
     res.status(200).json({'sumOfGroupTwilioCharges':sumOfGroupTwilioCharges});
+  } catch(err) {
+    console.log(err)
+    res.status(500).json(err);
+  }
+});
+
+
+router.get('/allTwilioCharges', async(req,res) => {
+  try{
+    console.log('/allTwilioCharges hit');
+    // const groupId = req.body.groupId;
+    // let groupTwilioCharges = [];
+    const allTwilioChargesRes = await client.calls.list();
+    console.log('allTwilioChargesRes: ', allTwilioChargesRes)
+
+    const mostRecent = allTwilioChargesRes[allTwilioChargesRes.length-1]
+    console.log('mostRecent: ', mostRecent)
+
+    // const allTwilioChargesResFromFormatted = client.calls.each({
+    //   startTimeAfter: new Date(Date.UTC(2019,03,17)),
+    //   status:'completed'
+    // },
+    //   calls => console.log(calls)
+    // );
+
+    res.status(200).json({'allTwilioChargesRes':allTwilioChargesRes});
   } catch(err) {
     console.log(err)
     res.status(500).json(err);
