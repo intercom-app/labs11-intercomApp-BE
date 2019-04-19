@@ -134,7 +134,7 @@ router.post('/createCharge', async(req,res) => {
   } 
   catch (err) {
     console.log('err: ', err);
-    res.status(500).json(err);
+    res.status(200).json(err);
   }
 });
 
@@ -195,20 +195,9 @@ router.post('/groupTwilioCharges', async(req,res) => {
 router.get('/allTwilioCharges', async(req,res) => {
   try{
     console.log('/allTwilioCharges hit');
-    // const groupId = req.body.groupId;
-    // let groupTwilioCharges = [];
+
     const allTwilioChargesRes = await client.calls.list();
     console.log('allTwilioChargesRes: ', allTwilioChargesRes)
-
-    const mostRecent = allTwilioChargesRes[allTwilioChargesRes.length-1]
-    console.log('mostRecent: ', mostRecent)
-
-    // const allTwilioChargesResFromFormatted = client.calls.each({
-    //   startTimeAfter: new Date(Date.UTC(2019,03,17)),
-    //   status:'completed'
-    // },
-    //   calls => console.log(calls)
-    // );
 
     res.status(200).json({'allTwilioChargesRes':allTwilioChargesRes});
   } catch(err) {
