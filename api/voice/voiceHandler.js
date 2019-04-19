@@ -84,7 +84,6 @@ exports.voiceResponse = function voiceResponse(toNumber) {
 
 exports.registerBinding = function registerBinding(req, res) {
 
-  console.log('req.body: ', req.body);
   client.notify.services(process.env.SERVICE_SID)
   .bindings
   .create({
