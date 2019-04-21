@@ -258,46 +258,4 @@ router.post('/userStripeCharges', async(req,res) => {
 
 
 
-// const callSessions = async(groupId) => {
-//     try{
-//         // const res = await axios.get(`https://api.twilio.com/2010-04-01/Accounts/${process.env.ACCOUNT_SID}/Calls.json`);
-//         // console.log(res)
-
-//         // const callSessions = await client.calls.list();
-
-//         let callSessionsPriceList = []
-
-//         // const callSessions = await client.calls.each({from_formatted:`${groupId}`},
-//         //     calls => {
-//         //         console.log(calls.price);
-//         //         callSessionsList.push(calls.price)
-//         // });
-
-
-
-//         // let callSessionsContainer =[];
-//         // console.log('callSessionsList: ', callSessionsList)
-
-//         const callSessions = await client.calls.list();
-//         // console.log('callSessions:', callSessions)
-//         for (let i = 0; i < callSessions.length; i++) {
-//             if (callSessions[i].from_formatted === groupId) {
-//                 callSessionsPriceList.push(callSessions[i].price)
-//             }
-//         }
-//         console.log('callSessionsPriceList: ', callSessionsPriceList)
-//         // return callSessionsList
-
-        
-        
-//     }
-//     catch(err) {
-//         console.log(err)
-//     }
-// }
-
-// callSessions();
-
-
-
 module.exports = router;
