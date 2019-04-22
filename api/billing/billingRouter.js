@@ -259,7 +259,7 @@ router.post('/userStripeCharges', async(req,res) => {
 // -from the user object, we get the user's stripeId
 // 
 
-router.post('/updateCreditCardIOS', async(req,res) => {
+router.post('/updateCreditCard', async(req,res) => {
   try{
     const host = 'http://localhost:3300';
     // const host = 'intercom.netlify.com'
@@ -301,7 +301,7 @@ router.post('/updateCreditCardIOS', async(req,res) => {
   }
 })
 
-router.post('/addMoneyIOS', async(req,res) => {
+router.post('/addMoney', async(req,res) => {
   try{
     const host = 'http://localhost:3300';
     // const host = 'heroku database url';
