@@ -198,9 +198,9 @@ router.get('/allTwilioCharges', async(req,res) => {
     // const groupId = req.body.groupId;
     // let groupTwilioCharges = [];
     const allTwilioChargesRes = await client.calls.list();
-    console.log('allTwilioChargesRes: ', allTwilioChargesRes)
+    // console.log('allTwilioChargesRes: ', allTwilioChargesRes)
 
-    const mostRecent = allTwilioChargesRes[allTwilioChargesRes.length-1]
+    const mostRecent = allTwilioChargesRes[0]
     console.log('mostRecent: ', mostRecent)
 
     // const allTwilioChargesResFromFormatted = client.calls.each({
@@ -223,12 +223,12 @@ router.get('/allTwilioCharges', async(req,res) => {
 router.post('/userStripeCharges', async(req,res) => {
   try {
       const stripeId = req.body.stripeId;
-      const allCharges = await stripe.charges.list();
-      console.log('allCharges: ', allCharges)
+      const allChargesRes = await stripe.charges.list();
+      // console.log('allUserStripeCharges: ', allChargesRes.data)
 
       // const allCustomerCharges = allCharges.filter(charge => charge.customer === stripeId)
 
-      let userStripeChargesArr = allCharges.data.filter(charge => charge.customer === stripeId);
+      let userStripeChargesArr = allChargesRes.data.filter(charge => charge.customer === stripeId);
       
       userStripeChargesArr = userStripeChargesArr.map(chargeObj => {
         return chargeObj.amount
@@ -301,7 +301,110 @@ router.post('/updateCreditCardIOS', async(req,res) => {
   }
 })
 
+router.post('/addMoneyIOS', async(req,res) => {
+  try{
+    const host = 'http://localhost:3300';
+    // const host = 'intercom.netlify.com'
+    const userId = req.body.userId;
+    const amountToAdd = req.body.amountToAdd;
+    console.log('amountToAdd: ',amountToAdd);
 
+    const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
+    console.log('getUserResponse.data: ',getUserResponse.data);
+    const userStripeId=getUserResponse.data.stripeId;
+    console.log('userStripeId: ',userStripeId);
+
+    // step 1: charge the customer for the amount of he wants to add to their account balance
+
+    const customerStripeInfo = await axios.post(`${host}/api/billing/retrieveCustomerDefaultSource`,{'userStripeId':userStripeId});
+    // console.log('customerStripeInfo: ', customerStripeInfo);
+    const defaultSourceId = customerStripeInfo.data.defaultSourceId;
+    console.log('defaultSourceId: ', defaultSourceId);
+
+    // TESTING - Soon to be phased out (but working) credit card charging method
+    const chargeResponse = await axios.post(`${host}/api/billing/createCharge`, {
+      'userStripeId':userStripeId,
+      'sourceId': defaultSourceId,
+      'amountToAdd': amountToAdd*100 // amountToAdd is in dollars, so we multiply by 100 to have the units be cents (stripe wants the amountToAdd to be in cents when making a charge). 
+    })
+
+    // console.log('chargeResponse: ', chargeResponse);
+    console.log('chargeResponse.data: ', chargeResponse.data);
+
+    if (chargeResponse.data.type === "StripeInvalidRequestError") {
+      console.log('errorMessage: ',chargeResponse.data.message);
+      res.status(200).json({'errorMessage':chargeResponse.data.message});
+    }
+
+    if (chargeResponse.data.charge.status === "succeeded") {
+      console.log('charge succeeded!');
+
+      //get the sum of all the user's stripe charges
+      const sumOfUserStripeChargesRes = await axios.post(`${host}/api/billing/userStripeCharges`, {'stripeId': userStripeId});
+      let sumOfUserStripeCharges = sumOfUserStripeChargesRes.data.sumOfUserStripeCharges;
+      sumOfUserStripeCharges = Math.round(sumOfUserStripeCharges*100)/10000; //in dollars
+      console.log('sumOfUserStripeCharges [dollars]: ', sumOfUserStripeCharges); //in dollars
+
+      //get the sum of all the user's twilio charges
+      const allTwilioChargesRes = await axios.get(`${host}/api/billing/allTwilioCharges`);
+      // console.log('allTwilioChargesRes: ', allTwilioChargesRes);
+      let allTwilioCharges = allTwilioChargesRes.data.allTwilioChargesRes;
+      // console.log('allTwilioCharges: ', allTwilioCharges);
+
+      // first get a list of all the groups the user owns
+      const userOwnedGroupsRes = await axios.get(`${host}/api/users/${userId}/groupsOwned`);
+      const userOwnedGroups = userOwnedGroupsRes.data 
+      const userOwnedGroupsIds = userOwnedGroups.map(group => {
+        return group.groupId
+    });
+
+    // Step 2: Recalculate the user's account balance now that the stripe charge went through. First calculate the new account balance and then post it to the accountBalance endpoint in the backend.
+    let twilioChargesForUserOwnedGroups = []
+
+    for (let i = 0; i< userOwnedGroupsIds.length; i++) {
+      let userOwnedGroupId = userOwnedGroupsIds[i];
+
+      const groupTwilioChargesRes = await axios.post(`${host}/api/billing/groupTwilioCharges`, {'groupId':userOwnedGroupId});        
+      // console.log("groupTwilioChargesRes: ", groupTwilioChargesRes);
+      console.log("groupTwilioChargesRes.data: ", groupTwilioChargesRes.data);
+
+      const sumOfGroupTwilioCharges = groupTwilioChargesRes.data.sumOfGroupTwilioCharges;
+      console.log("sumOfGroupTwilioCharges: ", sumOfGroupTwilioCharges);
+
+      twilioChargesForUserOwnedGroups.push(sumOfGroupTwilioCharges);
+    }
+    console.log('twilioChargesForUserOwnedGroups: ', twilioChargesForUserOwnedGroups);
+
+    let sumOfUserTwilioCharges = 0;
+    for (let i = 0; i < twilioChargesForUserOwnedGroups.length;i++) {
+      sumOfUserTwilioCharges += twilioChargesForUserOwnedGroups[i];
+    }
+    console.log('sumOfUserTwilioCharges: ', sumOfUserTwilioCharges);
+    sumOfUserTwilioCharges = Math.round(sumOfUserTwilioCharges*100)/100;
+    console.log('sumOfUserTwilioCharges: ', sumOfUserTwilioCharges);
+
+
+
+    const updatedAccountBalance = sumOfUserStripeCharges + sumOfUserTwilioCharges;
+    console.log('updatedAccountBalance: ', updatedAccountBalance);
+
+    await axios.put(`${host}/api/users/${userId}/accountBalance`,{accountBalance:updatedAccountBalance});
+    res.status(200).json({'updatedAccountBalance':updatedAccountBalance})
+} else {
+    console.log('err', err);
+    res.status(500).json(err)
+}
+
+
+ 
+
+    
+    res.status(200).json();
+  } catch(err) {
+    console.log('err: ', err);
+    return err
+  }
+})
 
 
 module.exports = router;
