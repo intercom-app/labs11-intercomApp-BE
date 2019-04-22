@@ -4,8 +4,7 @@ const router = require('express').Router();
 router.use(require("body-parser").text());
 const stripe = require("stripe")(process.env.SK_TEST);
 const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
-
-
+const axios = require('axios');
 
 
 // api/purchasingAndBilling
@@ -68,8 +67,9 @@ router.post('/updateDefaultSource', async(req,res) => {
     const sourceId = req.body.sourceId;
     console.log('sourceId', sourceId);
     
+    // attach source to the customer object in stripe's backend
     const newlyUpdatedSource = await stripe.customers.update(userStripeId, {source:sourceId});
-    console.log('newlyUpdatedSource: ', newlyUpdatedSource);
+    console.log('newlyUpdatedSource.data: ', newlyUpdatedSource.data);
     res.status(200).json(newlyUpdatedSource);
   } catch (err) {
     console.log('err: ', err);
@@ -253,7 +253,53 @@ router.post('/userStripeCharges', async(req,res) => {
 });
 
 
+// endpoint for updating a user's credit card (api/billingRouter/updateCreditCardIOS)
 
+// -inputs should be user object
+// -from the user object, we get the user's stripeId
+// 
+
+router.post('/updateCreditCardIOS', async(req,res) => {
+  try{
+    const host = 'http://localhost:3300';
+    // const host = 'intercom.netlify.com'
+    const userId = req.body.userId;
+    const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
+    console.log('getUserResponse.data: ',getUserResponse.data);
+    const userStripeId=getUserResponse.data.stripeId;
+    console.log('userStripeId: ',userStripeId);
+
+    // //step 1: Create the source on the front-end and send it here to the backend. Receive new source here.
+    const source = req.body.source;
+    console.log('source: ', source);
+
+    //step 2: update the default source associated with the customer on stripe's backend
+
+    // Note: This should have been named updateCustomerRes since we're updating the source attached to the customer object on stripe's backend. Leaving it like this for now. 
+    const updateSourceRes = await axios.post(`${host}/api/billing/updateDefaultSource`, {
+      'userStripeId': userStripeId,
+      'sourceId':source.id
+    });
+    // console.log('updateSourceRes: ', updateSourceRes);
+
+    if (updateSourceRes.error) {
+      console.log('updatedSourceRes.error: ', updateSourceRes.error);
+      res.status(200).json({'updateSourceError':updateSourceRes.error});
+    }
+
+    const last4 = updateSourceRes.data.sources.data[0].card.last4;
+    console.log('newLast4: ', last4);
+    await axios.put(`${host}/api/users/${userId}/last4`, {last4:last4})
+
+    const updatedSource = updateSourceRes.data;
+    console.log('updatedSource: ', updatedSource)
+    // return updatedSource; 
+    res.status(200).json(updatedSource);
+  } catch(err) {
+    console.log('err: ', err);
+    return err
+  }
+})
 
 
 
