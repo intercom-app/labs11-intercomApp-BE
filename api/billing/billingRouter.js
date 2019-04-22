@@ -197,8 +197,8 @@ router.post('/userStripeCharges', async(req,res) => {
 
 router.post('/updateCreditCard', async(req,res) => {
   try{
-    const host = 'http://localhost:3300';
-    // const host = 'intercom.netlify.com'
+    // const host = 'http://localhost:3300';
+    const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
     // console.log('getUserResponse.data: ',getUserResponse.data);
@@ -239,8 +239,8 @@ router.post('/updateCreditCard', async(req,res) => {
 
 router.post('/addMoney', async(req,res) => {
   try{
-    const host = 'http://localhost:3300';
-    // const host = 'heroku database url';
+    // const host = 'http://localhost:3300';
+    const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
     // console.log('getUserResponse.data: ',getUserResponse.data);
