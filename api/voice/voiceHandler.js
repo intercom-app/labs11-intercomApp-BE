@@ -82,6 +82,20 @@ exports.voiceResponse = function voiceResponse(toNumber) {
   return twiml.toString();
 };
 
+exports.registerBinding = function registerBinding(req, res) {
+
+  client.notify.services(process.env.SERVICE_SID)
+  .bindings
+  .create({
+     identity: req.body.identity,
+     address: req.body.Address,
+     bindingType: 'apn',
+     endpoint: 'endpoint_id'
+   })
+  .then(binding => console.log(binding.sid))
+  .catch(err => console.error(err))
+};
+
 function isNumber(to) {
   if(to.length == 1) {
     if(!isNaN(to)) {

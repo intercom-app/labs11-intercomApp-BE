@@ -21,4 +21,7 @@ router.post('/makeCall', (req, res) => {
   res.send(voiceHandler.makeCall(req, res));
 });
 
+router.post('/register-binding', (req, res) => {
+  res.send(voiceHandler.registerBinding(req, res));
+});
 module.exports = router;
