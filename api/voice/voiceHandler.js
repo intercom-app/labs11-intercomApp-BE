@@ -42,10 +42,8 @@ exports.makeCall = function makeCall(request, response) {
 
   if (request.method == 'POST') {
     to = request.body.to;
-    console.log('Post:', request.body)
   } else {
     to = request.query.to;
-    console.log('Else:', request.query)
   }
   const voiceResponse = new VoiceResponse();
 
@@ -53,12 +51,17 @@ exports.makeCall = function makeCall(request, response) {
       voiceResponse.say("Congratulations! You have made your first call! Good bye.");
   } else if (isNumber(to)) {
       const dial = voiceResponse.dial({callerId : callerNumber});
-      dial.conference(to);
+      dial.conference({
+        statusCallback: 'https://intercom-be-farste.herokuapp.com/api/voice/send-notification',
+        statusCallbackEvent: 'start end join leave mute hold'
+    }, to);
   } else {
       const dial = voiceResponse.dial({callerId : callerNumber});
-      dial.conference(to);
+      dial.conference({
+        statusCallback: 'https://intercom-be-farste.herokuapp.com/api/voice/send-notification',
+        statusCallbackEvent: 'start end join leave mute hold'
+    }, to);
   }
-  console.log('Response:' + voiceResponse.toString());
   return voiceResponse.toString();
 }
 
@@ -90,31 +93,38 @@ exports.registerBinding = function registerBinding(req, res) {
      identity: req.body.identity,
      address: req.body.Address,
      bindingType: 'apn',
-     endpoint: 'endpoint_id'
+     endpoint: 'endpoint_id',
+     tags: tags
    })
-  .then(binding => console.log(binding.sid))
+  .then(binding)
   .catch(err => console.error(err))
 };
+
+exports.sendNotification = function sendNotification(req, res) {
+
+  // Create a reference to the user notification service
+  client.notify.services(process.env.SERVICE_SID)
+             .notifications
+             .create({body: req.body.StatusCallbackEvent, identity: req.body.FriendlyName})
+             .then(notification)
+             .catch(err => console.error(err));
+ };
 
 function isNumber(to) {
   if(to.length == 1) {
     if(!isNaN(to)) {
-      console.log("It is a 1 digit long number" + to);
       return true;
     }
   } else if(String(to).charAt(0) == '+') {
     number = to.substring(1);
     if(!isNaN(number)) {
-      console.log("It is a number " + to);
       return true;
     };
   } else {
     if(!isNaN(to)) {
-      console.log("It is a number " + to);
       return true;
     }
   }
-  console.log("not a number");
   return false;
 }
 
