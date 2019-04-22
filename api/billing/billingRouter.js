@@ -27,7 +27,7 @@ router.post('/charge2', async (req, res) => {
   
       res.json({status});
     } catch (err) {
-        console.log('err: ', err);
+        // console.log('err: ', err);
         res.status(500).end();
     }
 });
@@ -51,7 +51,7 @@ router.post('/attachSourceToCustomer', async(req,res) => {
     
 
   } catch (err) {
-    console.log('err: ', err);
+    // console.log('err: ', err);
     res.status(500).json(err);
   }
 })
@@ -72,7 +72,7 @@ router.post('/updateDefaultSource', async(req,res) => {
     // console.log('newlyUpdatedSource.data: ', newlyUpdatedSource.data);
     res.status(200).json(newlyUpdatedSource);
   } catch (err) {
-    console.log('err: ', err);
+    // console.log('err: ', err);
     res.status(500).json(err);
   }
 })
@@ -106,7 +106,7 @@ router.post('/createPaymentIntent', async(req,res) => {
     res.status(200).json({'client_secret':paymentIntent.client_secret});
   } 
   catch (err) {
-    console.log('err: ', err.response);
+    // console.log('err: ', err.response);
     res.status(500).json(err.response);
   }
 });
@@ -133,7 +133,7 @@ router.post('/createCharge', async(req,res) => {
     res.status(200).json({'charge':charge});
   } 
   catch (err) {
-    console.log('errorMessage: ', err.message);
+    // console.log('errorMessage: ', err.message);
     res.status(200).json({'errorMessage':err.message});
   }
 });
@@ -153,7 +153,7 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
     res.status(200).json({'defaultSourceId':defaultSourceId});
   } 
   catch (err) {
-    console.log('err: ', err);
+    // console.log('err: ', err);
     res.status(500).json(err);
   }
 });
@@ -188,7 +188,7 @@ router.post('/groupTwilioCharges', async(req,res) => {
 
     res.status(200).json({'sumOfGroupTwilioCharges':sumOfGroupTwilioCharges});
   } catch(err) {
-    console.log(err)
+    // console.log(err);
     res.status(500).json(err);
   }
 });
@@ -207,7 +207,7 @@ router.get('/allTwilioCharges', async(req,res) => {
 
     res.status(200).json({'allTwilioChargesRes':allTwilioChargesRes});
   } catch(err) {
-    console.log(err)
+    // console.log(err);
     res.status(500).json(err);
   }
 });
@@ -247,7 +247,7 @@ router.post('/userStripeCharges', async(req,res) => {
 
       res.status(200).json({'sumOfUserStripeCharges':sumOfUserStripeCharges});
   } catch(err) {
-    console.log('err: ', err);
+    // console.log('err: ', err);
     res.status(500).json(err);
   }
 });
@@ -283,7 +283,7 @@ router.post('/updateCreditCard', async(req,res) => {
     // console.log('updateSourceRes: ', updateSourceRes);
 
     if (updateSourceRes.error) {
-      console.log('updatedSourceRes.error: ', updateSourceRes.error);
+      // console.log('updatedSourceRes.error: ', updateSourceRes.error);
       res.status(200).json({'updateSourceError':updateSourceRes.error});
     }
 
@@ -296,7 +296,7 @@ router.post('/updateCreditCard', async(req,res) => {
     // return updatedSource; 
     res.status(200).json({'updatedSource': updatedSource});
   } catch(err) {
-    console.log('err: ', err);
+    // console.log('err: ', err);
     return err
   }
 })
@@ -404,7 +404,7 @@ router.post('/addMoney', async(req,res) => {
     } 
   }
   catch(err) {
-    console.log('err: ', err);
+    // console.log('err: ', err);
     res.status(500).json({err});
   }
 })
