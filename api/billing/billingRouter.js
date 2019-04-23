@@ -224,7 +224,7 @@ router.post('/updateCreditCard', async(req,res) => {
     }
 
     const last4 = updateSourceRes.data.sources.data[0].card.last4.toString();
-    console.log('newLast4: ', last4);
+    // console.log('newLast4: ', last4);
     await axios.put(`${host}/api/users/${userId}/last4`, {last4:last4})
 
     const updatedSource = updateSourceRes.data.updatedSource;
