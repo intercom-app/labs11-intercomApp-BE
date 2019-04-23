@@ -122,6 +122,7 @@ Production deployed to Heroku and uses Heroku Postgress database add-on.
 ### Tables
 - **PK** = Primary Key
 - **FK** = Foreign Key
+- **FK Ref** = Foreign Key Reference (<<*table*>>.<<*row*>>)
 
 #### Users Table
 Table: `users`
@@ -156,49 +157,49 @@ Table: `groups`
 #### Group Activities Table
 Table: `activities`
 
-| Name               | Data type     | PK | Unique | Not NULL | Default To  | FK | FK Reference | Update  | Delete  |
-| -------------------|---------------|:--:|:------:|:--------:|:-----------:|:--:|:------------:|:-------:|:-------:|
-| id                 | integer       | +  | +      | +        | -           | -  | -            | -       | -       |
-| userId             | integer       | -  | -      | +        | -           | +  | users.id     | CASCADE | CASCADE |
-| groupId            | integer       | -  | -      | +        | -           | +  | groups.id    | CASCADE | CASCADE |
-| activity           | varchar(128)  | -  | -      | +        | -           | -  | -            | -       | -       |
-| createdAt          | timestamp     | -  | -      | -        | knex.fn(now)| -  | -            | -       | -       |
+| Name               | Data type     | PK | Unique | Not NULL | Default To  | FK | FK Ref    | Update  | Delete  |
+| -------------------|---------------|:--:|:------:|:--------:|:-----------:|:--:|:---------:|:-------:|:-------:|
+| id                 | integer       | +  | +      | +        | -           | -  | -         | -       | -       |
+| userId             | integer       | -  | -      | +        | -           | +  | users.id  | CASCADE | CASCADE |
+| groupId            | integer       | -  | -      | +        | -           | +  | groups.id | CASCADE | CASCADE |
+| activity           | varchar(128)  | -  | -      | +        | -           | -  | -         | -       | -       |
+| createdAt          | timestamp     | -  | -      | -        | knex.fn(now)| -  | -         | -       | -       |
 
 #### Group Owners Table
 Table: `usersGroupsOwnership`
 
-| Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
-| userId             | integer       | -           | +  | users.id     | CASCADE |
-| groupId            | integer       | -           | +  | groups.id    | CASCADE |
-| createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
+| Name               | Data type     | Default To  | FK | FK Ref    | Delete  |
+| -------------------|---------------|:-----------:|:--:|:---------:|:-------:|
+| userId             | integer       | -           | +  | users.id  | CASCADE |
+| groupId            | integer       | -           | +  | groups.id | CASCADE |
+| createdAt          | timestamp     | knex.fn(now)| -  | -         | -       |
 
 #### Group Members Table
 Table: `usersGroupsMembership`
 
-| Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
-| userId             | integer       | -           | +  | users.id     | CASCADE |
-| groupId            | integer       | -           | +  | groups.id    | CASCADE |
-| createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
+| Name               | Data type     | Default To  | FK | FK Ref    | Delete  |
+| -------------------|---------------|:-----------:|:--:|:---------:|:-------:|
+| userId             | integer       | -           | +  | users.id  | CASCADE |
+| groupId            | integer       | -           | +  | groups.id | CASCADE |
+| createdAt          | timestamp     | knex.fn(now)| -  | -         | -       |
 
 #### Group Invitees Table
 Table: `usersGroupsInvitations`
 
-| Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
-| userId             | integer       | -           | +  | users.id     | CASCADE |
-| groupId            | integer       | -           | +  | groups.id    | CASCADE |
-| createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
+| Name               | Data type     | Default To  | FK | FK Ref    | Delete  |
+| -------------------|---------------|:-----------:|:--:|:---------:|:-------:|
+| userId             | integer       | -           | +  | users.id  | CASCADE |
+| groupId            | integer       | -           | +  | groups.id | CASCADE |
+| createdAt          | timestamp     | knex.fn(now)| -  | -         | -       |
 
 #### Group Call Participants Table
 Table: `usersGroupsParticipants`
 
-| Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
-| userId             | integer       | -           | +  | users.id     | CASCADE |
-| groupId            | integer       | -           | +  | groups.id    | CASCADE |
-| createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
+| Name               | Data type     | Default To  | FK | FK Ref    | Delete  |
+| -------------------|---------------|:-----------:|:--:|:---------:|:-------:|
+| userId             | integer       | -           | +  | users.id  | CASCADE |
+| groupId            | integer       | -           | +  | groups.id | CASCADE |
+| createdAt          | timestamp     | knex.fn(now)| -  | -         | -       |
 
 
 # API
