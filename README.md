@@ -278,18 +278,17 @@ Voice router, model and handler functions located within `api/voice` directory. 
 ### Billing Router
 Voice router and handler functions located within `api/billing` directory. Handler functions implemented with Stripe, a third-party billing API.
 
-| Endpoint                                     | Method | Request              | Response                                                         |
-|----------------------------------------------|--------|----------------------|------------------------------------------------------------------|
-| `/api/billing/addMoney`                      | POST   |                      |                                                                  |
-| `/api/billing/allTwilioCharges`              | GET    |                      |                                                                  |
-| `/api/billing/attachSourceToCustomer`        | POST   |                      |                                                                  |
-| `/api/billing/createCharge`                  | POST   |                      |                                                                  |
-| `/api/billing/createPaymentIntent`           | POST   |                      |                                                                  |
-| `/api/billing/groupTwilioCharges`            | POST   |                      |                                                                  |
-| `/api/billing/retrieveCustomerDefaultSource` | POST   |                      |                                                                  |
-| `/api/billing/updateCreditCard`              | POST   |                      |                                                                  |
-| `/api/billing/updateDefaultSource`           | POST   |                      |                                                                  |
-| `/api/billing/userStripeCharges`             | POST   |                      |                                                                  |
+| Endpoint                                     | Method | Request                                           | Response                                                                                                           |
+|----------------------------------------------|--------|---------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `/api/billing/addMoney`                      | POST   | Send User ID and Amount to Add                    | Adds charge to user's Stripe account, updates user's account balance in database. Returns updated account balance. |
+| `/api/billing/allTwilioCharges`              | GET    |                                                   | Retrieves total Twilio charges in our account                                                                      |
+| `/api/billing/attachSourceToCustomer`        | POST   | Send User Stripe ID and Source ID                 | Attaches credit card to user's Stripe account                                                                      |
+| `/api/billing/createCharge`                  | POST   | Send User Stripe ID, Source ID, and Amount to Add | Adds charge to user's Stripe account. Returns Stripe details as to charge.                                         |
+| `/api/billing/groupTwilioCharges`            | POST   | Send Group ID                                     | Retrieves total Twilio charges for sepcified group                                                                 |
+| `/api/billing/retrieveCustomerDefaultSource` | POST   | Send User Stripe ID                               | Retrieves user's Stripe source and credit card information                                                         |
+| `/api/billing/updateCreditCard`              | POST   | Send User ID and Source                           | Updates database with user's new source ID and credit card information. Returns updated information.               |
+| `/api/billing/updateDefaultSource`           | POST   | Send User Stripe ID and Source ID                 | Updates user's Stripe account with nre source and credit card information. Returns updated information.            |
+| `/api/billing/userStripeCharges`             | POST   | Send User Stripe ID                               | Retrives total charges on user's Stripe account                                                                    |
 
 ### Image Upload Router
 Image upload router and handler functions located within `api/upload` directory. Handler functions implemented with Cloudinary, a third-party cloud-based image management application.
