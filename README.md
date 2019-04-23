@@ -300,6 +300,6 @@ Image upload router and handler functions located within `api/upload` directory.
 
 
 ## Third Party APIs
-* [Cloudinary](https://cloudinary.com/){:target="_blank" rel="noopener"}: Used to store user profile images.
-* [Stripe](https://stripe.com/){:target="_blank" rel="noopener"}: Used for billing implementation.
-* [Twilio](https://www.twilio.com/){:target="_blank" rel="noopener"}: Used for voice chat implementation.
+* <a href="https://cloudinary.com/" target="_blank" rel="noopener">Cloudinary</a>: Used to store user profile images.
+* <a href="https://stripe.com/" target="_blank" rel="noopener">Stripe</a>: Used for billing implementation.
+* <a href="https://www.twilio.com/" target="_blank" rel="noopener">Twilio</a>: Used for voice chat implementation.
