@@ -120,44 +120,44 @@ Production deployed to Heroku and uses Heroku Postgress database add-on.
 ![Schema Table](https://i.imgur.com/hMqhkJx.png)
 
 ### Tables
-- PK = Primary Key
-- FK = Foreign Key
+- **PK** = Primary Key
+- **FK** = Foreign Key
 
 #### Users Table
 Table: `users`
 
 | Name               | Data type     | PK | Unique | Not NULL | Default To  |
-| -------------------|---------------|:--:|:------:|:--------:|-------------|
+| -------------------|---------------|:--:|:------:|:--------:|:-----------:|
 | id                 | integer       | +  | +      | +        | -           |
 | email              | varchar(128)  | -  | +      | +        | -           |
 | displayName        | varchar(128)  | -  | -      | +        | -           |
 | firstName          | varchar(128)  | -  | -      | -        | -           |
 | lastName           | varchar(128)  | -  | -      | -        | -           |
-| avatar             | varchar(256)  | -  | -      | -        | null        |
+| avatar             | varchar(256)  | -  | -      | -        | *null*      |
 | phoneNumber        | integer(9)    | -  | -      | -        | -           |
-| callStatus         | boolean       | -  | -      | +        | false       |
-| stripeId           | varchar(128)  | -  | -      | -        | null        |
+| callStatus         | boolean       | -  | -      | +        | *false*     |
+| stripeId           | varchar(128)  | -  | -      | -        | *null*      |
 | billingSubcription | varchar(128)  | -  | -      | +        | 'free'      |
 | accountBalance     | integer       | -  | -      | -        | -           |
-| last4              | integer       | -  | -      | -        | null        |
+| last4              | integer       | -  | -      | -        | *null*      |
 | createdAt          | timestamp     | -  | -      | -        | knex.fn(now)|
 
 #### Groups Table
 Table: `groups`
 
 | Name               | Data type     | PK | Unique | Not NULL | Default To  |
-| -------------------|---------------|:--:|:------:|:--------:|-------------|
+| -------------------|---------------|:--:|:------:|:--------:|:-----------:|
 | id                 | integer       | +  | +      | +        | -           |
 | name               | varchar(128)  | -  | -      | +        | -           |
 | phoneNumber        | varchar(12)   | -  | -      | -        | -           |
-| callStatus         | boolean       | -  | -      | -        | false       |
+| callStatus         | boolean       | -  | -      | -        | *false*     |
 | createdAt          | timestamp     | -  | -      | -        | knex.fn(now)|
 
 #### Group Activities Table
 Table: `activities`
 
 | Name               | Data type     | PK | Unique | Not NULL | Default To  | FK | FK Reference | Update  | Delete  |
-| -------------------|---------------|:--:|:------:|:--------:|-------------|:--:|--------------|:-------:|:-------:|
+| -------------------|---------------|:--:|:------:|:--------:|:-----------:|:--:|:------------:|:-------:|:-------:|
 | id                 | integer       | +  | +      | +        | -           | -  | -            | -       | -       |
 | userId             | integer       | -  | -      | +        | -           | +  | users.id     | CASCADE | CASCADE |
 | groupId            | integer       | -  | -      | +        | -           | +  | groups.id    | CASCADE | CASCADE |
@@ -168,7 +168,7 @@ Table: `activities`
 Table: `usersGroupsOwnership`
 
 | Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|-------------|:--:|--------------|:-------:|
+| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
 | userId             | integer       | -           | +  | users.id     | CASCADE |
 | groupId            | integer       | -           | +  | groups.id    | CASCADE |
 | createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
@@ -177,7 +177,7 @@ Table: `usersGroupsOwnership`
 Table: `usersGroupsMembership`
 
 | Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|-------------|:--:|--------------|:-------:|
+| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
 | userId             | integer       | -           | +  | users.id     | CASCADE |
 | groupId            | integer       | -           | +  | groups.id    | CASCADE |
 | createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
@@ -186,7 +186,7 @@ Table: `usersGroupsMembership`
 Table: `usersGroupsInvitations`
 
 | Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|-------------|:--:|--------------|:-------:|
+| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
 | userId             | integer       | -           | +  | users.id     | CASCADE |
 | groupId            | integer       | -           | +  | groups.id    | CASCADE |
 | createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
@@ -195,7 +195,7 @@ Table: `usersGroupsInvitations`
 Table: `usersGroupsParticipants`
 
 | Name               | Data type     | Default To  | FK | FK Reference | Delete  |
-| -------------------|---------------|-------------|:--:|--------------|:-------:|
+| -------------------|---------------|:-----------:|:--:|:------------:|:-------:|
 | userId             | integer       | -           | +  | users.id     | CASCADE |
 | groupId            | integer       | -           | +  | groups.id    | CASCADE |
 | createdAt          | timestamp     | knex.fn(now)| -  | -            | -       |
@@ -221,15 +221,15 @@ User routers and models located within `api/users` directory.
 | Endpoint                           | Method | Request             | Response                                                         |
 |------------------------------------|--------|---------------------|------------------------------------------------------------------|
 | `/api/users`                       | GET    |                     | List of all users                                                |
-|                                    | POST   | Send User Info      | Adds user to database (if new). Returns user's ID & information. | 
+| `/api/users`                       | POST   | Send User Info      | Adds user to database (if new). Returns user's ID & information. | 
 | `/api/users/:id`                   | GET    |                     | All user information by specified ID                             | 
-|                                    | PUT    | Send Needed Changes | Updates user and returns all user information by specified ID    |
-|                                    | DELETE |                     | Deletes all user's activities, then Deletes user. Returns count. |
+| `/api/users/:id`                   | PUT    | Send Needed Changes | Updates user and returns all user information by specified ID    |
+| `/api/users/:id`                   | DELETE |                     | Deletes all user's activities, then Deletes user. Returns count. |
 | `/api/users/:id/detailed`          | GET    |                     | All user information by specified ID with user's groups owned, groups belonged to, and groups invited to. Each group returned also returns that group's information with call participants, activities, owners, members, and invitees of each group. |
 | `/api/users/:id/accountBalance`    | GET    |                     | User's account balance information                               |
-|                                    | PUT    | Send New Balance    | Updates user's account balance and returns user                  |
+| `/api/users/:id/accountBalance`    | PUT    | Send New Balance    | Updates user's account balance and returns user                  |
 | `/api/users/:id/last4`             | GET    |                     | User's last four digits of credit card                           |
-|                                    | PUT    | Send New Card Info  | Updates user's last four digits of credit card and returns user  |
+| `/api/users/:id/last4`             | PUT    | Send New Card Info  | Updates user's last four digits of credit card and returns user  |
 | `/api/users/:id/groupsOwned`       | GET    |                     | List of all groups that user owns                                | 
 | `/api/users/:id/groupsBelongedTo`  | GET    |                     | List of all groups that user is a member of                      |
 | `/api/users/:id/groupsInvitedTo`   | GET    |                     | List of all groups that user is invited to                       |
@@ -240,56 +240,56 @@ Groups routers and models located within `api/groups` directory.
 | Endpoint                                 | Method | Request              | Response                                                         |
 |------------------------------------------|--------|----------------------|------------------------------------------------------------------|
 | `/api/groups`                            | GET    |                      | List of all groups                                               |
-|                                          | POST   | Send Group Info      | Adds group to database. Returns group ID & information.          | 
+| `/api/groups`                            | POST   | Send Group Info      | Adds group to database. Returns group ID & information.          | 
 | `/api/groups/:id`                        | GET    |                      | All group information by specified ID                            | 
-|                                          | PUT    | Send Needed Changes  | Updates group and returns all group information by specified ID  |
-|                                          | DELETE |                      | Deletes group by specified ID. Returns count.                    |
+| `/api/groups/:id`                        | PUT    | Send Needed Changes  | Updates group and returns all group information by specified ID  |
+| `/api/groups/:id`                        | DELETE |                      | Deletes group by specified ID. Returns count.                    |
 | `/api/groups/:id/activities`             | GET    |                      | List of all activities for specified group ID                    |
-|                                          | POST   | Send Activity Info   | Adds activity to database. Returns list of all group activities. |
+| `/api/groups/:id/activities`             | POST   | Send Activity Info   | Adds activity to database. Returns list of all group activities. |
 | `/api/groups/:id/callParticipants`       | GET    |                      | List of all call participants for specified group ID             |
-|                                          | POST   | Send User Info       | Adds participant to database. Returns list of call participants. |
-|                                          | DELETE |                      | Deletes all call participants for specified group. Returns count.|
+| `/api/groups/:id/callParticipants`       | POST   | Send User Info       | Adds participant to database. Returns list of call participants. |
+| `/api/groups/:id/callParticipants`       | DELETE |                      | Deletes all call participants for specified group. Returns count.|
 | `/api/groups/:id/callParticipants/:id`   | DELETE |                      | Deletes call participant by specified user ID and group ID. Returns updated list of call participants for group. |
 | `/api/groups/:id/callStatus`             | GET    |                      | Group's current call status                                      | 
-|                                          | PUT    | Send New Call Status | Updates group call status and returns all group information      |
+| `/api/groups/:id/callStatus`             | PUT    | Send New Call Status | Updates group call status and returns all group information      |
 | `/api/groups/:id/groupOwners`            | GET    |                      | List of all group owners                                         | 
-|                                          | POST   | Send User Info       | Adds group owner to database. Returns list of group owners.      |
+| `/api/groups/:id/groupOwners`            | POST   | Send User Info       | Adds group owner to database. Returns list of group owners.      |
 | `/api/groups/:id/groupOwners/detailed`   | GET    |                      | List of all group owners with detailed user information          | 
 | `/api/groups/:id/groupOwners/:id`        | DELETE |                      | Deletes group owner by specified user ID and group ID. Returns updated list of group owners. |
 | `/api/groups/:id/groupMembers`           | GET    |                      | List of all group members                                        |
-|                                          | POST   | Send User Info       | Adds group member to database. Returns list of group members.    |
+| `/api/groups/:id/groupMembers`           | POST   | Send User Info       | Adds group member to database. Returns list of group members.    |
 | `/api/groups/:id/groupMembers/detailed`  | GET    |                      | List of all group members with detailed user information         | 
 | `/api/groups/:id/groupMembers/:id`       | DELETE |                      | Deletes group member by specified user ID and group ID. Returns updated list of group members. |
 | `/api/groups/:id/groupInvitees`          | GET    |                      | List of all group invitees                                       |
-|                                          | POST   | Send User Info       | Adds group invitee to database. Returns list of group invitees.  |
+| `/api/groups/:id/groupInvitees`          | POST   | Send User Info       | Adds group invitee to database. Returns list of group invitees.  |
 | `/api/groups/:id/groupInvitees/detailed` | GET    |                      | List of all group invitees with detailed user information        | 
 | `/api/groups/:id/groupInvitees/:id`      | DELETE |                      | Deletes group invitee by specified user ID and group ID. Returns updated list of group invitees. |
 
 ### Voice Router
-Voice router, model and handler functions located within `api/voice` directory. Voice handler functions implemented with Twilio, a third-party communications API. |
+Voice router, model and handler functions located within `api/voice` directory. Voice handler functions implemented with Twilio, a third-party communications API. 
 
-| Endpoint                           | Method | Response                                                                                                           |
-|------------------------------------|--------|--------------------------------------------------------------------------------------------------------------------|
-| `/api/voice/accessToken`           | GET    | Validates a user with Twilio API to generate an Access Token for user to make or join calls.                       |
-| `/api/voice/makeCall`              | POST   | Retrieves the group ID that a user is attempting to chat with and initiates the process to start or join the call. |
-| `/api/voice/registerBinding`       | POST   | Generates device-specific address Twilio will use to send notifications                                            |
-| `/api/voice/sendNotification`      | POST   | Sends notiifications to users                                                                                      |
+| Endpoint                     | Method | Response                                                                                                           |
+|------------------------------|--------|--------------------------------------------------------------------------------------------------------------------|
+| `/api/voice/accessToken`     | GET    | Validates a user with Twilio API to generate an Access Token for user to make or join calls.                       |
+| `/api/voice/makeCall`        | POST   | Retrieves the group ID that a user is attempting to chat with and initiates the process to start or join the call. |
+| `/api/voice/registerBinding` | POST   | Generates device-specific address Twilio will use to send notifications                                            |
+| `/api/voice/sendNotification`| POST   | Sends notiifications to users                                                                                      |
 
 ### Billing Router
 Voice router and handler functions located within `api/billing` directory. Handler functions implemented with Stripe, a third-party billing API.
 
 | Endpoint                                     | Method | Request              | Response                                                         |
 |----------------------------------------------|--------|----------------------|------------------------------------------------------------------|
-| `/api/billing/attachSourceToCustomer`        | POST   |                      |                                                                  |
-| `/api/billing/updateDefaultSource`           | POST   |                      |                                                                  |
-| `/api/billing/createPaymentIntent`           | POST   |                      |                                                                  |
-| `/api/billing/createCharge`                  | POST   |                      |                                                                  |
-| `/api/billing/retrieveCustomerDefaultSource` | POST   |                      |                                                                  |
-| `/api/billing/groupTwilioCharges`            | POST   |                      |                                                                  |
-| `/api/billing/allTwilioCharges`              | GET    |                      |                                                                  |
-| `/api/billing/userStripeCharges`             | POST   |                      |                                                                  |
 | `/api/billing/addMoney`                      | POST   |                      |                                                                  |
+| `/api/billing/allTwilioCharges`              | GET    |                      |                                                                  |
+| `/api/billing/attachSourceToCustomer`        | POST   |                      |                                                                  |
+| `/api/billing/createCharge`                  | POST   |                      |                                                                  |
+| `/api/billing/createPaymentIntent`           | POST   |                      |                                                                  |
+| `/api/billing/groupTwilioCharges`            | POST   |                      |                                                                  |
+| `/api/billing/retrieveCustomerDefaultSource` | POST   |                      |                                                                  |
 | `/api/billing/updateCreditCard`              | POST   |                      |                                                                  |
+| `/api/billing/updateDefaultSource`           | POST   |                      |                                                                  |
+| `/api/billing/userStripeCharges`             | POST   |                      |                                                                  |
 
 ### Image Upload Router
 Image upload router and handler functions located within `api/upload` directory. Handler functions implemented with Cloudinary, a third-party cloud-based image management application.
@@ -300,6 +300,6 @@ Image upload router and handler functions located within `api/upload` directory.
 
 
 ## Third Party APIs
-* [Cloudinary](https://cloudinary.com/): Used to store user profile images.
-* [Stripe](https://stripe.com/): Used for billing implementation.
-* [Twilio](https://www.twilio.com/): Used for voice chat implementation.
+* [Cloudinary](https://cloudinary.com/){:target="_blank" rel="noopener"}: Used to store user profile images.
+* [Stripe](https://stripe.com/){:target="_blank" rel="noopener"}: Used for billing implementation.
+* [Twilio](https://www.twilio.com/){:target="_blank" rel="noopener"}: Used for voice chat implementation.
