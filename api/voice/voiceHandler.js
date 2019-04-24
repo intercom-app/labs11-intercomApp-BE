@@ -48,24 +48,18 @@ exports.makeCall = function makeCall(request, response) {
   const voiceResponse = new VoiceResponse();
 
   if (!to) {
-      voiceResponse.say("Congratulations! You have made your first call! Good bye.");
-  } else if (isNumber(to)) {
+      voiceResponse.say("No group detected.");
+  }  else {
       const dial = voiceResponse.dial({callerId : callerNumber});
       dial.conference({
-        statusCallback: 'https://intercom-be-farste.herokuapp.com/api/voice/send-notification',
-        statusCallbackEvent: 'start end join leave mute hold'
-    }, to);
-  } else {
-      const dial = voiceResponse.dial({callerId : callerNumber});
-      dial.conference({
-        statusCallback: 'https://intercom-be-farste.herokuapp.com/api/voice/send-notification',
+        statusCallback: 'https://intercom-be.herokuapp.com/api/voice/send-notification',
         statusCallbackEvent: 'start end join leave mute hold'
     }, to);
   }
   return voiceResponse.toString();
 }
 
-exports.voiceResponse = function voiceResponse(toNumber) {
+/* exports.voiceResponse = function voiceResponse(toNumber) {
   // Create a TwiML voice res
   const twiml = new VoiceResponse();
 
@@ -83,7 +77,7 @@ exports.voiceResponse = function voiceResponse(toNumber) {
   }
 
   return twiml.toString();
-};
+}; */
 
 exports.registerBinding = function registerBinding(req, res) {
 
@@ -94,45 +88,27 @@ exports.registerBinding = function registerBinding(req, res) {
      address: req.body.Address,
      bindingType: 'apn',
      endpoint: 'endpoint_id',
-     tags: tags
+     tags: req.body.tags
    })
   .then(binding)
   .catch(err => console.error(err))
 };
 
-exports.sendNotification = function sendNotification(req, res) {
+exports.sendNotification = async function sendNotification(req, res) {
 
   // Create a reference to the user notification service
-  client.notify.services(process.env.SERVICE_SID)
-             .notifications
-             .create({body: req.body.StatusCallbackEvent, identity: req.body.FriendlyName})
-             .then(notification)
-             .catch(err => console.error(err));
- };
-
-function isNumber(to) {
-  if(to.length == 1) {
-    if(!isNaN(to)) {
-      return true;
-    }
-  } else if(String(to).charAt(0) == '+') {
-    number = to.substring(1);
-    if(!isNaN(number)) {
-      return true;
-    };
-  } else {
-    if(!isNaN(to)) {
-      return true;
-    }
+  try {
+  console.log("body: id", req.body);
+  messageBody = await `A group chat has started.`
+  if (req.body.statusCallbackEvent == 'participant-join') {
+    messageBody = await `A user has joined ${group}'s chatroom`
+  } else if (req.body.statusCallbackEvent == 'conference-end') {
+    messageBody = await `All users have left ${group}'s chatroom`
   }
-  return false;
-}
-
-/**
- * Checks if the given value is valid as phone number
- * @param {Number|String} number
- * @return {Boolean}
- */
-function isAValidPhoneNumber(number) {
-  return /^[\d\+\-\(\) ]+$/.test(number);
-}
+  await client.notify.services(process.env.SERVICE_SID)
+             .notifications
+             .create(await {body: messageBody, tag: req.body.FriendlyName})
+             .then(notification => console.log(notification.sid))
+ } catch(error){
+   console.error(error);
+ }};
