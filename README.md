@@ -139,7 +139,7 @@ Table: `users`
 | callStatus         | boolean       | -  | -      | +        | *false*     |
 | stripeId           | varchar(128)  | -  | -      | -        | *null*      |
 | billingSubcription | varchar(128)  | -  | -      | +        | 'free'      |
-| accountBalance     | integer       | -  | -      | -        | -           |
+| accountBalance     | float         | -  | -      | -        | -           |
 | last4              | varchar(4)    | -  | -      | -        | *null*      |
 | createdAt          | timestamp     | -  | -      | -        | knex.fn(now)|
 
