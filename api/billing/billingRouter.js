@@ -199,9 +199,9 @@ router.post('/updateCreditCard', async(req,res) => {
   console.log('/updateCreditCard hit');
   console.log('req.body: ', req.body)
   try{
-    const host = 'http://localhost:3300';
+    // const host = 'http://localhost:3300';
     console.log('req.body: ', req.body)
-    // const host = 'https://intercom-be.herokuapp.com';
+    const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
     // console.log('getUserResponse.data: ',getUserResponse.data);
