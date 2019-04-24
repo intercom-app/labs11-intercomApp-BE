@@ -287,7 +287,7 @@ Voice router and handler functions located within `api/billing` directory. Handl
 | `/api/billing/createCharge`                  | POST   | Send User Stripe ID, Source ID, and Amount to Add | Adds charge to user's Stripe account. Returns Stripe details as to charge.                                         |
 | `/api/billing/groupTwilioCharges`            | POST   | Send Group ID                                     | Retrieves total Twilio charges for sepcified group                                                                 |
 | `/api/billing/retrieveCustomerDefaultSource` | POST   | Send User Stripe ID                               | Retrieves user's Stripe source and credit card information                                                         |
-| `/api/billing/updateCreditCard`              | POST   | Send User ID and Source                           | Updates database with user's new source ID and credit card information. Returns updated information.               |
+| `/api/billing/updateCreditCard`              | POST   | Send User ID and Source ID                        | Updates database with user's new source ID and credit card information. Returns updated information.               |
 | `/api/billing/updateDefaultSource`           | POST   | Send User Stripe ID and Source ID                 | Updates user's Stripe account with nre source and credit card information. Returns updated information.            |
 | `/api/billing/userStripeCharges`             | POST   | Send User Stripe ID                               | Retrives total charges on user's Stripe account                                                                    |
 
