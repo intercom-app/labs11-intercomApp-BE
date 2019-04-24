@@ -310,7 +310,7 @@ router.post('/addMoney', async(req,res) => {
         return group.groupId
       });
       console.log('userOwnedGroupsIds: ', userOwnedGroupsIds);
-
+ 
       
         
       let twilioChargesForEachUserOwnedGroup = [];
@@ -330,15 +330,16 @@ router.post('/addMoney', async(req,res) => {
         console.log('twilioChargesForEachUserOwnedGroup: ', twilioChargesForEachUserOwnedGroup);
       }
       console.log('twilioChargesForEachUserOwnedGroup: ', twilioChargesForEachUserOwnedGroup);
-  
-      let sumOfUserTwilioCharges = 0;
-      for (let i = 0; i < twilioChargesForEachUserOwnedGroup.length;i++) {
-        sumOfUserTwilioCharges += twilioChargesForEachUserOwnedGroup[i];
-      }
+      
+      const sumOfUserTwilioCharges = twilioChargesForEachUserOwnedGroup.reduce((acc, cur) => acc+cur, 0)
+      // let sumOfUserTwilioCharges = 0;
+      // for (let i = 0; i < twilioChargesForEachUserOwnedGroup.length;i++) {
+      //   sumOfUserTwilioCharges += twilioChargesForEachUserOwnedGroup[i];
+      // }
 
       console.log('sumOfUserTwilioCharges (exact): ', sumOfUserTwilioCharges);
-      sumOfUserTwilioCharges = Math.round(sumOfUserTwilioCharges*10000)/100;
-      console.log('sumOfUserTwilioCharges (rounded): ', sumOfUserTwilioCharges);
+      // sumOfUserTwilioCharges = Math.round(sumOfUserTwilioCharges*10000)/100;
+      // console.log('sumOfUserTwilioCharges (rounded): ', sumOfUserTwilioCharges);
   
   
   
