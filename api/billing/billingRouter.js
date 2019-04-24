@@ -101,16 +101,15 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
 
 
 router.post('/groupTwilioCharges', async(req,res) => {
+  console.log('/groupTwilioCharges hit before try');
   try{
-    console.log('/groupTwilioCharges hit');
+    console.log('/groupTwilioCharges hit after try');
     const groupId = req.body.groupId;
     console.log('groupId: ',  groupId);
     let groupTwilioCharges = [];
     const allTwilioChargesRes = await client.calls.list();
     // console.log('allTwilioChargesRes: ', allTwilioChargesRes)
 
-    
-    // console.log('allTwilioChargesRes: ',  allTwilioChargesRes);
 
     for (let i = 0; i < allTwilioChargesRes.length; i++) {
         if (allTwilioChargesRes[i].fromFormatted === groupId) {
@@ -137,11 +136,10 @@ router.post('/groupTwilioCharges', async(req,res) => {
 
 router.get('/allTwilioCharges', async(req,res) => {
   try{
-    // console.log('/allTwilioCharges hit');
-    // const groupId = req.body.groupId;
-    // let groupTwilioCharges = [];
+    console.log('/allTwilioCharges hit');
+
     const allTwilioChargesRes = await client.calls.list();
-    console.log('allTwilioChargesRes: ', allTwilioChargesRes)
+    console.log('allTwilioChargesRes in /allTwilioCharges: ', allTwilioChargesRes)
 
     const mostRecent = allTwilioChargesRes[0]
     console.log('mostRecent: ', mostRecent);
@@ -299,7 +297,7 @@ router.post('/addMoney', async(req,res) => {
 
       //get the sum of all the user's twilio charges
       const allTwilioChargesRes = await axios.get(`${host}/api/billing/allTwilioCharges`);
-      console.log('allTwilioChargesRes: ', allTwilioChargesRes);
+      console.log('allTwilioChargesRes in /addMoney endpoint: ', allTwilioChargesRes);
       let allTwilioCharges = allTwilioChargesRes.data.allTwilioChargesRes;
       console.log('allTwilioCharges: ', allTwilioCharges);
 
