@@ -239,6 +239,7 @@ router.post('/updateCreditCard', async(req,res) => {
 })
 
 router.post('/addMoney', async(req,res) => {
+  console.log('req.body: ', req.body)
   try{
     // const host = 'http://localhost:3300';
     console.log('req.body: ', req.body)
