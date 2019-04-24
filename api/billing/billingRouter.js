@@ -102,9 +102,9 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
 
 router.post('/groupTwilioCharges', async(req,res) => {
   try{
-    // console.log('/groupTwilioCharges hit');
+    console.log('/groupTwilioCharges hit');
     const groupId = req.body.groupId;
-    // console.log('groupId: ',  groupId);
+    console.log('groupId: ',  groupId);
     let groupTwilioCharges = [];
     const allTwilioChargesRes = await client.calls.list();
     // console.log('allTwilioChargesRes: ', allTwilioChargesRes)
@@ -114,17 +114,18 @@ router.post('/groupTwilioCharges', async(req,res) => {
 
     for (let i = 0; i < allTwilioChargesRes.length; i++) {
         if (allTwilioChargesRes[i].fromFormatted === groupId) {
+          console.log('allTwilioChargesRes[i].price', allTwilioChargesRes[i].price)
           groupTwilioCharges.push(allTwilioChargesRes[i].price)
         }
     }
-    // console.log('groupTwilioCharges: ', groupTwilioCharges)
+    console.log('groupTwilioCharges: ', groupTwilioCharges)
 
     let sumOfGroupTwilioCharges = 0;
     for (let i = 0; i < groupTwilioCharges.length;i++) {
       sumOfGroupTwilioCharges += groupTwilioCharges[i];
     }
-    // console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges);
-    // console.log('group twilio charges endpoint success');
+    console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges);
+    console.log('group twilio charges endpoint success');
 
     res.status(200).json({'sumOfGroupTwilioCharges':sumOfGroupTwilioCharges});
   } catch(err) {
@@ -140,7 +141,7 @@ router.get('/allTwilioCharges', async(req,res) => {
     // const groupId = req.body.groupId;
     // let groupTwilioCharges = [];
     const allTwilioChargesRes = await client.calls.list();
-    // console.log('allTwilioChargesRes: ', allTwilioChargesRes)
+    console.log('allTwilioChargesRes: ', allTwilioChargesRes)
 
     const mostRecent = allTwilioChargesRes[0]
     console.log('mostRecent: ', mostRecent);
@@ -279,7 +280,7 @@ router.post('/addMoney', async(req,res) => {
     console.log('chargeResponse.data: ', chargeResponse.data);
 
     if (chargeResponse.data.errorMessage) {
-      // console.log('errorMessage: ',chargeResponse.data.errorMessage);
+      console.log('errorMessage: ',chargeResponse.data.errorMessage);
       res.status(200).json({'errorMessage':chargeResponse.data.errorMessage});
     }
 
@@ -298,9 +299,9 @@ router.post('/addMoney', async(req,res) => {
 
       //get the sum of all the user's twilio charges
       const allTwilioChargesRes = await axios.get(`${host}/api/billing/allTwilioCharges`);
-      // console.log('allTwilioChargesRes: ', allTwilioChargesRes);
+      console.log('allTwilioChargesRes: ', allTwilioChargesRes);
       let allTwilioCharges = allTwilioChargesRes.data.allTwilioChargesRes;
-      // console.log('allTwilioCharges: ', allTwilioCharges);
+      console.log('allTwilioCharges: ', allTwilioCharges);
 
       // first get a list of all the groups the user owns
       const userOwnedGroupsRes = await axios.get(`${host}/api/users/${userId}/groupsOwned`);
@@ -315,16 +316,18 @@ router.post('/addMoney', async(req,res) => {
       let twilioChargesForEachUserOwnedGroup = [];
 
       for (let i=0; i<userOwnedGroupsIds.length;i++) {
+        console.log('start of adding each group\'s twilio charges to the twilioChargesForEachUserOwnedGroup array')
         let userOwnedGroupId = userOwnedGroupsIds[i];
         // console.log('userOwnedGroupId: ', userOwnedGroupId);
         const groupTwilioChargesRes = await axios.post(`${host}/api/billing/groupTwilioCharges`, {'groupId':userOwnedGroupId});        
-        // console.log("groupTwilioChargesRes: ", groupTwilioChargesRes);
-        // console.log('groupTwilioChargesRes.data.sumOfGroupTwilioCharges: ', groupTwilioChargesRes.data.sumOfGroupTwilioCharges);
+        console.log("groupTwilioChargesRes: ", groupTwilioChargesRes);
+        console.log('groupTwilioChargesRes.data.sumOfGroupTwilioCharges: ', groupTwilioChargesRes.data.sumOfGroupTwilioCharges);
     
         const sumOfGroupTwilioCharges = groupTwilioChargesRes.data.sumOfGroupTwilioCharges;
-        // console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges);
+        console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges);
     
         twilioChargesForEachUserOwnedGroup.push(sumOfGroupTwilioCharges);
+        console.log('twilioChargesForEachUserOwnedGroup: ', twilioChargesForEachUserOwnedGroup);
       }
       console.log('twilioChargesForEachUserOwnedGroup: ', twilioChargesForEachUserOwnedGroup);
   
