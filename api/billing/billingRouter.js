@@ -198,6 +198,7 @@ router.post('/userStripeCharges', async(req,res) => {
 router.post('/updateCreditCard', async(req,res) => {
   try{
     // const host = 'http://localhost:3300';
+    console.log('req.body: ', req.body)
     const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
@@ -207,7 +208,7 @@ router.post('/updateCreditCard', async(req,res) => {
 
     // //step 1: Create the source on the front-end and send it here to the backend. Receive new source here.
     const sourceId = req.body.sourceId;
-    // console.log('source: ', source);
+    console.log('sourceId: ', sourceId);
 
     //step 2: update the default source associated with the customer on stripe's backend
 
@@ -219,7 +220,7 @@ router.post('/updateCreditCard', async(req,res) => {
     // console.log('updateSourceRes: ', updateSourceRes);
 
     if (updateSourceRes.error) {
-      // console.log('updatedSourceRes.error: ', updateSourceRes.error);
+      console.log('updatedSourceRes.error: ', updateSourceRes.error);
       res.status(200).json({'updateSourceError':updateSourceRes.error});
     }
 
@@ -228,18 +229,19 @@ router.post('/updateCreditCard', async(req,res) => {
     await axios.put(`${host}/api/users/${userId}/last4`, {last4:last4})
 
     const updatedSource = updateSourceRes.data.updatedSource;
-    // console.log('updatedSource: ', updatedSource)
+    console.log('updatedSource: ', updatedSource)
     // return updatedSource; 
     res.status(200).json({'updatedSource': updatedSource});
   } catch(err) {
     // console.log('err: ', err);
     return err
-  }
+  } 
 })
 
 router.post('/addMoney', async(req,res) => {
   try{
     // const host = 'http://localhost:3300';
+    console.log('req.body: ', req.body)
     const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
@@ -248,7 +250,7 @@ router.post('/addMoney', async(req,res) => {
     // console.log('userStripeId: ',userStripeId);
 
     let amountToAdd = req.body.amountToAdd; // in dollars
-    // console.log('amountToAdd [dollars]: ',amountToAdd); // in dollars
+    console.log('amountToAdd [dollars]: ',amountToAdd); // in dollars
 
     amountToAdd = Math.round(amountToAdd*100) //in cents
     // console.log('amountToAdd [cents]: ',amountToAdd); // in cents
@@ -258,9 +260,9 @@ router.post('/addMoney', async(req,res) => {
     // step 1: charge the customer for the amount of he wants to add to their account balance
 
     const customerStripeInfo = await axios.post(`${host}/api/billing/retrieveCustomerDefaultSource`,{'userStripeId':userStripeId});
-    // console.log('customerStripeInfo: ', customerStripeInfo);
+    console.log('customerStripeInfo: ', customerStripeInfo);
     const defaultSourceId = customerStripeInfo.data.defaultSourceId;
-    // console.log('defaultSourceId: ', defaultSourceId);
+    console.log('defaultSourceId: ', defaultSourceId);
 
     // TESTING - Soon to be phased out (but working) credit card charging method
     const chargeResponse = await axios.post(`${host}/api/billing/createCharge`, {
@@ -270,7 +272,7 @@ router.post('/addMoney', async(req,res) => {
     })
 
     // console.log('chargeResponse: ', chargeResponse);
-    // console.log('chargeResponse.data: ', chargeResponse.data);
+    console.log('chargeResponse.data: ', chargeResponse.data);
 
     if (chargeResponse.data.errorMessage) {
       // console.log('errorMessage: ',chargeResponse.data.errorMessage);
@@ -278,7 +280,7 @@ router.post('/addMoney', async(req,res) => {
     }
 
     if (chargeResponse.data.charge.status === "succeeded") {
-      // console.log('charge succeeded!');
+      console.log('charge succeeded!');
 
       //step 2 recalculate the user's account balance and record the change in our backend via a put request
 
@@ -333,14 +335,14 @@ router.post('/addMoney', async(req,res) => {
   
   
       const updatedAccountBalance = sumOfUserStripeCharges + sumOfUserTwilioCharges;
-      // console.log('updatedAccountBalance: ', updatedAccountBalance);
+      console.log('updatedAccountBalance: ', updatedAccountBalance);
   
       await axios.put(`${host}/api/users/${userId}/accountBalance`,{accountBalance:updatedAccountBalance});
       res.status(200).json({'updatedAccountBalance':updatedAccountBalance})
     } 
   }
   catch(err) {
-    // console.log('err: ', err);
+    console.log('err: ', err);
     res.status(500).json({err});
   }
 })
