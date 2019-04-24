@@ -196,6 +196,8 @@ router.post('/userStripeCharges', async(req,res) => {
 // endpoint for updating a user's credit card (api/billingRouter/updateCreditCard)
 
 router.post('/updateCreditCard', async(req,res) => {
+  console.log('/updateCreditCard hit');
+  console.log('req.body: ', req.body)
   try{
     // const host = 'http://localhost:3300';
     console.log('req.body: ', req.body)
@@ -239,6 +241,7 @@ router.post('/updateCreditCard', async(req,res) => {
 })
 
 router.post('/addMoney', async(req,res) => {
+  console.log('/updateCreditCard hit');
   console.log('req.body: ', req.body)
   try{
     // const host = 'http://localhost:3300';
@@ -248,13 +251,13 @@ router.post('/addMoney', async(req,res) => {
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
     // console.log('getUserResponse.data: ',getUserResponse.data);
     const userStripeId=getUserResponse.data.stripeId;
-    // console.log('userStripeId: ',userStripeId);
+    console.log('userStripeId: ',userStripeId);
 
     let amountToAdd = req.body.amountToAdd; // in dollars
     console.log('amountToAdd [dollars]: ',amountToAdd); // in dollars
 
     amountToAdd = Math.round(amountToAdd*100) //in cents
-    // console.log('amountToAdd [cents]: ',amountToAdd); // in cents
+    console.log('amountToAdd [cents]: ',amountToAdd); // in cents
 
     
 
@@ -329,9 +332,10 @@ router.post('/addMoney', async(req,res) => {
       for (let i = 0; i < twilioChargesForEachUserOwnedGroup.length;i++) {
         sumOfUserTwilioCharges += twilioChargesForEachUserOwnedGroup[i];
       }
-      // console.log('sumOfUserTwilioCharges (exact): ', sumOfUserTwilioCharges);
+
+      console.log('sumOfUserTwilioCharges (exact): ', sumOfUserTwilioCharges);
       sumOfUserTwilioCharges = Math.round(sumOfUserTwilioCharges*100)/100;
-      // console.log('sumOfUserTwilioCharges (rounded): ', sumOfUserTwilioCharges);
+      console.log('sumOfUserTwilioCharges (rounded): ', sumOfUserTwilioCharges);
   
   
   
