@@ -206,7 +206,7 @@ router.post('/updateCreditCard', async(req,res) => {
     // console.log('userStripeId: ',userStripeId);
 
     // //step 1: Create the source on the front-end and send it here to the backend. Receive new source here.
-    const source = req.body.source;
+    const sourceId = req.body.sourceId;
     // console.log('source: ', source);
 
     //step 2: update the default source associated with the customer on stripe's backend
@@ -214,7 +214,7 @@ router.post('/updateCreditCard', async(req,res) => {
     // Note: This should have been named updateCustomerRes since we're updating the source attached to the customer object on stripe's backend. Leaving it like this for now. 
     const updateSourceRes = await axios.post(`${host}/api/billing/updateDefaultSource`, {
       'userStripeId': userStripeId,
-      'sourceId':source.id
+      'sourceId':sourceId
     });
     // console.log('updateSourceRes: ', updateSourceRes);
 
