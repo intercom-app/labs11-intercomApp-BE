@@ -7,31 +7,7 @@ const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN
 const axios = require('axios');
 
 
-// api/purchasingAndBilling
-
-router.get('/', async (req,res) => {
-    res.send('Hello from express router!');
-})
-
-// the FE sends the token to this endpoint
-router.post('/charge2', async (req, res) => {
-    try {
-      // console.log('req: ', req)
-      let {status} = await stripe.charges.create({
-        amount: 500,
-        currency: "usd",
-        description: "An example charge",
-        source: req.body
-      });
-      // console.log(req)
-  
-      res.json({status});
-    } catch (err) {
-        // console.log('err: ', err);
-        res.status(500).end();
-    }
-});
-
+// api/billing
 
 
 // endpoint for attaching a credit card to a customer
@@ -76,41 +52,6 @@ router.post('/updateDefaultSource', async(req,res) => {
     res.status(500).json(err);
   }
 })
-
-
-// endpoint for creating a PaymentIntent
-
-// A PaymentIntent is an object that represents your intent to collect payment from a customer, tracking the lifecycle of the payment process through each stage. When you create a PaymentIntent, specify the amount of money that you wish to collect from the customer, the currency, and the permitted payment methods. 
-// We recommend creating a PaymentIntent when the customer begins their checkout process. This helps track all the payment attempts with one object.
-// The PaymentIntent object contains a client secret, a unique key that you need to pass to Stripe.js on the client side in order to create a charge. 
-// The client secret can be used to complete the payment process with the amount specified on the PaymentIntent. It should not be logged, embedded in URLs, or exposed to anyone other than the customer. Make sure that you have TLS enabled on any page that includes the client secret.
-
-// Note to self: When creating the paymentIntent object I can 
-// also pass in the customer stripeId and a sourceId. I should 
-// probably also add a statement_descriptor. And I should probably also 
-// retrieve paymentIntent.status on the client side
-
-router.post('/createPaymentIntent', async(req,res) => {
-  try{
-    // console.log('/createPaymentIntent hit');
-    // console.log('req.body: ', req.body ); // this returns undefined in the console  
-    const amountToAddToAccountBalance = req.body.amountToAddToAccountBalance;
-    // console.log('amountToAddToAccountBalance: ', amountToAddToAccountBalance)
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amountToAddToAccountBalance,
-      currency:'usd',
-      payment_method_types: ['card']
-    });
-    // console.log('paymentIntent: ',paymentIntent)
-    // console.log('client_secret: ', paymentIntent.client_secret);
-    res.status(200).json({'client_secret':paymentIntent.client_secret});
-  } 
-  catch (err) {
-    // console.log('err: ', err.response);
-    res.status(500).json(err.response);
-  }
-});
-
 
 // endpoint for making a charge
 router.post('/createCharge', async(req,res) => {
@@ -157,7 +98,6 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
     res.status(500).json(err);
   }
 });
-
 
 
 router.post('/groupTwilioCharges', async(req,res) => {
@@ -253,16 +193,15 @@ router.post('/userStripeCharges', async(req,res) => {
 });
 
 
-// endpoint for updating a user's credit card (api/billingRouter/updateCreditCardIOS)
-
-// -inputs should be user object
-// -from the user object, we get the user's stripeId
-// 
+// endpoint for updating a user's credit card (api/billingRouter/updateCreditCard)
 
 router.post('/updateCreditCard', async(req,res) => {
+  console.log('/updateCreditCard hit');
+  console.log('req.body: ', req.body)
   try{
-    const host = 'http://localhost:3300';
-    // const host = 'intercom.netlify.com'
+    // const host = 'http://localhost:3300';
+    console.log('req.body: ', req.body)
+    const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
     // console.log('getUserResponse.data: ',getUserResponse.data);
@@ -270,61 +209,64 @@ router.post('/updateCreditCard', async(req,res) => {
     // console.log('userStripeId: ',userStripeId);
 
     // //step 1: Create the source on the front-end and send it here to the backend. Receive new source here.
-    const source = req.body.source;
-    // console.log('source: ', source);
+    const sourceId = req.body.sourceId;
+    console.log('sourceId: ', sourceId);
 
     //step 2: update the default source associated with the customer on stripe's backend
 
     // Note: This should have been named updateCustomerRes since we're updating the source attached to the customer object on stripe's backend. Leaving it like this for now. 
     const updateSourceRes = await axios.post(`${host}/api/billing/updateDefaultSource`, {
       'userStripeId': userStripeId,
-      'sourceId':source.id
+      'sourceId':sourceId
     });
     // console.log('updateSourceRes: ', updateSourceRes);
 
     if (updateSourceRes.error) {
-      // console.log('updatedSourceRes.error: ', updateSourceRes.error);
+      console.log('updatedSourceRes.error: ', updateSourceRes.error);
       res.status(200).json({'updateSourceError':updateSourceRes.error});
     }
 
-    const last4 = updateSourceRes.data.sources.data[0].card.last4;
+    const last4 = updateSourceRes.data.sources.data[0].card.last4.toString();
     // console.log('newLast4: ', last4);
     await axios.put(`${host}/api/users/${userId}/last4`, {last4:last4})
 
     const updatedSource = updateSourceRes.data.updatedSource;
-    // console.log('updatedSource: ', updatedSource)
+    console.log('updatedSource: ', updatedSource)
     // return updatedSource; 
     res.status(200).json({'updatedSource': updatedSource});
   } catch(err) {
     // console.log('err: ', err);
     return err
-  }
+  } 
 })
 
 router.post('/addMoney', async(req,res) => {
+  console.log('/updateCreditCard hit');
+  console.log('req.body: ', req.body)
   try{
-    const host = 'http://localhost:3300';
-    // const host = 'heroku database url';
+    // const host = 'http://localhost:3300';
+    console.log('req.body: ', req.body)
+    const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
     // console.log('getUserResponse.data: ',getUserResponse.data);
     const userStripeId=getUserResponse.data.stripeId;
-    // console.log('userStripeId: ',userStripeId);
+    console.log('userStripeId: ',userStripeId);
 
     let amountToAdd = req.body.amountToAdd; // in dollars
-    // console.log('amountToAdd [dollars]: ',amountToAdd); // in dollars
+    console.log('amountToAdd [dollars]: ',amountToAdd); // in dollars
 
     amountToAdd = Math.round(amountToAdd*100) //in cents
-    // console.log('amountToAdd [cents]: ',amountToAdd); // in cents
+    console.log('amountToAdd [cents]: ',amountToAdd); // in cents
 
     
 
     // step 1: charge the customer for the amount of he wants to add to their account balance
 
     const customerStripeInfo = await axios.post(`${host}/api/billing/retrieveCustomerDefaultSource`,{'userStripeId':userStripeId});
-    // console.log('customerStripeInfo: ', customerStripeInfo);
+    console.log('customerStripeInfo: ', customerStripeInfo);
     const defaultSourceId = customerStripeInfo.data.defaultSourceId;
-    // console.log('defaultSourceId: ', defaultSourceId);
+    console.log('defaultSourceId: ', defaultSourceId);
 
     // TESTING - Soon to be phased out (but working) credit card charging method
     const chargeResponse = await axios.post(`${host}/api/billing/createCharge`, {
@@ -334,7 +276,7 @@ router.post('/addMoney', async(req,res) => {
     })
 
     // console.log('chargeResponse: ', chargeResponse);
-    // console.log('chargeResponse.data: ', chargeResponse.data);
+    console.log('chargeResponse.data: ', chargeResponse.data);
 
     if (chargeResponse.data.errorMessage) {
       // console.log('errorMessage: ',chargeResponse.data.errorMessage);
@@ -342,7 +284,7 @@ router.post('/addMoney', async(req,res) => {
     }
 
     if (chargeResponse.data.charge.status === "succeeded") {
-      // console.log('charge succeeded!');
+      console.log('charge succeeded!');
 
       //step 2 recalculate the user's account balance and record the change in our backend via a put request
 
@@ -390,24 +332,57 @@ router.post('/addMoney', async(req,res) => {
       for (let i = 0; i < twilioChargesForEachUserOwnedGroup.length;i++) {
         sumOfUserTwilioCharges += twilioChargesForEachUserOwnedGroup[i];
       }
-      // console.log('sumOfUserTwilioCharges (exact): ', sumOfUserTwilioCharges);
+
+      console.log('sumOfUserTwilioCharges (exact): ', sumOfUserTwilioCharges);
       sumOfUserTwilioCharges = Math.round(sumOfUserTwilioCharges*100)/100;
-      // console.log('sumOfUserTwilioCharges (rounded): ', sumOfUserTwilioCharges);
+      console.log('sumOfUserTwilioCharges (rounded): ', sumOfUserTwilioCharges);
   
   
   
       const updatedAccountBalance = sumOfUserStripeCharges + sumOfUserTwilioCharges;
-      // console.log('updatedAccountBalance: ', updatedAccountBalance);
+      console.log('updatedAccountBalance: ', updatedAccountBalance);
   
       await axios.put(`${host}/api/users/${userId}/accountBalance`,{accountBalance:updatedAccountBalance});
       res.status(200).json({'updatedAccountBalance':updatedAccountBalance})
     } 
   }
   catch(err) {
-    // console.log('err: ', err);
+    console.log('err: ', err);
     res.status(500).json({err});
   }
 })
 
+// endpoint for creating a PaymentIntent
+
+// A PaymentIntent is an object that represents your intent to collect payment from a customer, tracking the lifecycle of the payment process through each stage. When you create a PaymentIntent, specify the amount of money that you wish to collect from the customer, the currency, and the permitted payment methods. 
+// We recommend creating a PaymentIntent when the customer begins their checkout process. This helps track all the payment attempts with one object.
+// The PaymentIntent object contains a client secret, a unique key that you need to pass to Stripe.js on the client side in order to create a charge. 
+// The client secret can be used to complete the payment process with the amount specified on the PaymentIntent. It should not be logged, embedded in URLs, or exposed to anyone other than the customer. Make sure that you have TLS enabled on any page that includes the client secret.
+
+// Note to self: When creating the paymentIntent object I can 
+// also pass in the customer stripeId and a sourceId. I should 
+// probably also add a statement_descriptor. And I should probably also 
+// retrieve paymentIntent.status on the client side
+
+// router.post('/createPaymentIntent', async(req,res) => {
+//   try{
+//     // console.log('/createPaymentIntent hit');
+//     // console.log('req.body: ', req.body ); // this returns undefined in the console  
+//     const amountToAddToAccountBalance = req.body.amountToAddToAccountBalance;
+//     // console.log('amountToAddToAccountBalance: ', amountToAddToAccountBalance)
+//     const paymentIntent = await stripe.paymentIntents.create({
+//       amount: amountToAddToAccountBalance,
+//       currency:'usd',
+//       payment_method_types: ['card']
+//     });
+//     // console.log('paymentIntent: ',paymentIntent)
+//     // console.log('client_secret: ', paymentIntent.client_secret);
+//     res.status(200).json({'client_secret':paymentIntent.client_secret});
+//   } 
+//   catch (err) {
+//     // console.log('err: ', err.response);
+//     res.status(500).json(err.response);
+//   }
+// });
 
 module.exports = router;
