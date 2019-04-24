@@ -143,7 +143,7 @@ router.get('/allTwilioCharges', async(req,res) => {
     // console.log('allTwilioChargesRes: ', allTwilioChargesRes)
 
     const mostRecent = allTwilioChargesRes[0]
-    // console.log('mostRecent: ', mostRecent)
+    console.log('mostRecent: ', mostRecent);
 
     res.status(200).json({'allTwilioChargesRes':allTwilioChargesRes});
   } catch(err) {
@@ -199,9 +199,9 @@ router.post('/updateCreditCard', async(req,res) => {
   console.log('/updateCreditCard hit');
   console.log('req.body: ', req.body)
   try{
-    // const host = 'http://localhost:3300';
+    const host = 'http://localhost:3300';
     console.log('req.body: ', req.body)
-    const host = 'https://intercom-be.herokuapp.com';
+    // const host = 'https://intercom-be.herokuapp.com';
     const userId = req.body.userId;
     const getUserResponse = await axios.get(`${host}/api/users/${userId}`);
     // console.log('getUserResponse.data: ',getUserResponse.data);
@@ -290,10 +290,10 @@ router.post('/addMoney', async(req,res) => {
 
       //get the sum of all the user's stripe charges
       const sumOfUserStripeChargesRes = await axios.post(`${host}/api/billing/userStripeCharges`, {'userStripeId': userStripeId});
-      // console.log('sumOfUserStripeChargesRes :', sumOfUserStripeChargesRes); 
+      console.log('sumOfUserStripeChargesRes :', sumOfUserStripeChargesRes); 
 
       let sumOfUserStripeCharges = sumOfUserStripeChargesRes.data.sumOfUserStripeCharges;
-      // console.log('sumOfUserStripeCharges [dollars]: ', sumOfUserStripeCharges); //in dollars
+      console.log('sumOfUserStripeCharges [dollars]: ', sumOfUserStripeCharges); //in dollars
 
 
       //get the sum of all the user's twilio charges
@@ -308,7 +308,7 @@ router.post('/addMoney', async(req,res) => {
       const userOwnedGroupsIds = userOwnedGroups.map(group => {
         return group.groupId
       });
-      // console.log('userOwnedGroupsIds: ', userOwnedGroupsIds);
+      console.log('userOwnedGroupsIds: ', userOwnedGroupsIds);
 
       
         
@@ -326,7 +326,7 @@ router.post('/addMoney', async(req,res) => {
     
         twilioChargesForEachUserOwnedGroup.push(sumOfGroupTwilioCharges);
       }
-      // console.log('twilioChargesForEachUserOwnedGroup: ', twilioChargesForEachUserOwnedGroup);
+      console.log('twilioChargesForEachUserOwnedGroup: ', twilioChargesForEachUserOwnedGroup);
   
       let sumOfUserTwilioCharges = 0;
       for (let i = 0; i < twilioChargesForEachUserOwnedGroup.length;i++) {
@@ -334,13 +334,14 @@ router.post('/addMoney', async(req,res) => {
       }
 
       console.log('sumOfUserTwilioCharges (exact): ', sumOfUserTwilioCharges);
-      sumOfUserTwilioCharges = Math.round(sumOfUserTwilioCharges*100)/100;
+      sumOfUserTwilioCharges = Math.round(sumOfUserTwilioCharges*10000)/100;
       console.log('sumOfUserTwilioCharges (rounded): ', sumOfUserTwilioCharges);
   
   
   
       const updatedAccountBalance = sumOfUserStripeCharges + sumOfUserTwilioCharges;
       console.log('updatedAccountBalance: ', updatedAccountBalance);
+      console.log('updatedAccountBalance type: ', typeof updatedAccountBalance);
   
       await axios.put(`${host}/api/users/${userId}/accountBalance`,{accountBalance:updatedAccountBalance});
       res.status(200).json({'updatedAccountBalance':updatedAccountBalance})
