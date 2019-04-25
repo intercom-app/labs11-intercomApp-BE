@@ -53,7 +53,8 @@ exports.up = function(knex, Promise) {
         
         //user account balance
         tbl
-            .float('accountBalance')
+            .decimal('accountBalance',4,2)
+            // .float('accountBalance')
             .defaultTo(0)
         
         //user last 4 credit card digits
