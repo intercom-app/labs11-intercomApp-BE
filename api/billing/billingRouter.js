@@ -99,7 +99,6 @@ router.post('/retrieveCustomerDefaultSource', async(req,res) => {
   }
 });
 
-
 router.post('/groupTwilioCharges', async(req,res) => {
   console.log('/groupTwilioCharges hit before try');
   try{
@@ -132,6 +131,55 @@ router.post('/groupTwilioCharges', async(req,res) => {
     res.status(500).json(err);
   }
 });
+
+
+// router.post('/groupTwilioCharges', async(req,res) => {
+//   console.log('/groupTwilioCharges hit before try');
+//   try{
+//     console.log('/groupTwilioCharges hit after try');
+//     const groupId = req.body.groupId;
+//     console.log('groupId: ',  groupId);
+//     // let groupTwilioCharges = [];
+//     const allTwilioChargesRes = await client.calls.list();
+//     // console.log('allTwilioChargesRes: ', allTwilioChargesRes)
+
+//     let groupTwilioChargesArr = allTwilioChargesRes.filter(twilioCall => twilioCall.fromFormatted === groupId);
+//     console.log('groupTwilioChargesArr1  :', groupTwilioChargesArr);
+
+//     groupTwilioChargesArr = groupTwilioChargesArr.map(groupTwilioCall => {
+//       return groupTwilioCall.price
+//     })
+//     console.log('groupTwilioChargesArr2  :', groupTwilioChargesArr);
+
+//     const sumOfGroupTwilioCharges = groupTwilioChargesArr.reduce((acc,cur) => acc+cur, 0);
+//     console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges);
+
+
+
+
+
+//     for (let i = 0; i < allTwilioChargesRes.length; i++) {
+//         if (allTwilioChargesRes[i].fromFormatted === groupId) {
+//           console.log('allTwilioChargesRes[i].price', allTwilioChargesRes[i].price)
+//           groupTwilioCharges.push(allTwilioChargesRes[i].price)
+//         }
+//     }
+//     console.log('groupTwilioCharges: ', groupTwilioCharges)
+
+//     let sumOfGroupTwilioCharges = 0;
+//     for (let i = 0; i < groupTwilioCharges.length;i++) {
+//       sumOfGroupTwilioCharges += groupTwilioCharges[i];
+//     }
+//     console.log('sumOfGroupTwilioCharges: ', sumOfGroupTwilioCharges);
+//     console.log('group twilio charges endpoint success');
+
+//     res.status(200).json({'sumOfGroupTwilioCharges':sumOfGroupTwilioCharges});
+//   } catch(err) {
+//     // console.log(err);
+//     res.status(500).json(err);
+//   }
+// });
+
 
 
 router.get('/allTwilioCharges', async(req,res) => {
